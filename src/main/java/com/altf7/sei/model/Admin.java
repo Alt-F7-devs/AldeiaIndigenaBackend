@@ -9,5 +9,5 @@ public class Admin {
     @Id
     private Long login;
 
-    private String senha;
+    private Integer senha;
 }
