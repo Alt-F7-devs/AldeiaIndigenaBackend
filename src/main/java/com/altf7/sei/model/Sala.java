@@ -9,7 +9,7 @@ public class Sala {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id_sala;
 
     private String numSa;
     private LocalDate data;

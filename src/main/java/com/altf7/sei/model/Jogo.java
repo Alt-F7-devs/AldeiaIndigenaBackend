@@ -7,7 +7,7 @@ public class Jogo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id_jogo;
 
     private String nome;
 

@@ -12,7 +12,7 @@ public class Presenca {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id_presenca;
 
     @ManyToOne
     @JoinColumn(name = "aluno_id")

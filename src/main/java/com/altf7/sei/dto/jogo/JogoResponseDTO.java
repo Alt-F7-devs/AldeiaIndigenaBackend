@@ -1,7 +1,8 @@
 package com.altf7.sei.dto.jogo;
 
-public class JogoResponseDTO {
+public record JogoResponseDTO(
+        Integer id_jogo,
+        String nome
+)
 
-    private Long id;
-    private String nome;
-}
+{}

@@ -1,7 +1,8 @@
 package com.altf7.sei.dto.presenca;
 
-public class PresencaRequestDTO {
+public record PresencaRequestDTO(
+        Integer id_aluno,
+        Integer id_sala
+)
 
-    private Long alunoId;
-    private Long salaId;
-}
+{}

@@ -2,11 +2,9 @@ package com.altf7.sei.dto.sala;
 
 import java.time.LocalDate;
 
-public class SalaRequestDTO {
+public record SalaRequestDTO(
+        String numSa,
+        LocalDate data
+)
 
-    private String numSa;
-    private LocalDate data;
-    private Long professorId;
-    private Long jogoId;
-    private Long adminId;
-}
+{}
