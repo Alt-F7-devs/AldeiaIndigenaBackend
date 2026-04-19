@@ -1,6 +1,5 @@
 package com.altf7.sei.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +12,7 @@ public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "aluno_id")
-    private Long id;
+    private Integer id_aluno;
 
     @Column(name = "nome", nullable = false)
     private String nome;

@@ -7,7 +7,7 @@ public class Professor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id_professor;
 
     private String nome;
     private String materia;

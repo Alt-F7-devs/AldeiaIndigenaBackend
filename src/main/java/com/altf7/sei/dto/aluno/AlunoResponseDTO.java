@@ -1,8 +1,9 @@
 package com.altf7.sei.dto.aluno;
 
-public class AlunoResponseDTO {
+public record AlunoResponseDTO(
+        Integer id_aluno,
+        String nome,
+        Integer cgm
+)
 
-    private Long id;
-    private String nome;
-    private Integer cgm;
-}
+{}

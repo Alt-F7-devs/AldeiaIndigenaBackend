@@ -1,8 +1,9 @@
 package com.altf7.sei.dto.presenca;
 
-public class PresencaResponseDTO {
+public record PresencaResponseDTO(
+        Integer id_presenca,
+        String nome,
+        String numSa
+)
 
-    private Long id;
-    private String alunoNome;
-    private String salaNumero;
-}
+{}

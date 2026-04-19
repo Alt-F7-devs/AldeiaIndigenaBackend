@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 public class Admin {
 
     @Id
-    private Long login;
+    private Integer login;
 
     private Integer senha;
 }

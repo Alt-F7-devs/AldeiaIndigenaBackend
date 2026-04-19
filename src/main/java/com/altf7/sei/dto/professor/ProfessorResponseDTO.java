@@ -1,8 +1,9 @@
 package com.altf7.sei.dto.professor;
 
-public class ProfessorResponseDTO {
+public record ProfessorResponseDTO(
+        Integer id_professor,
+        String nome,
+        String materia
+)
 
-    private Long id;
-    private String nome;
-    private String materia;
-}
+{}

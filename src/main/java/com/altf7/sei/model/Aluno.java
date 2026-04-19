@@ -8,7 +8,7 @@ public class Aluno {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id_aluno;
 
     private String nome;
     private String senha;

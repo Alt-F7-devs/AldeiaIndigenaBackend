@@ -12,7 +12,7 @@ public class Professor {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "professor_id")
-        private Long id;
+        private Integer id_professor;
 
         @Column(name = "nome", nullable = false)
         private String nome;
