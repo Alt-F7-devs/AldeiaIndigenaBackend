@@ -1,4 +1,4 @@
-package com.altf7.sei.model;
+package com.altf7.sei.entity;
 
 import jakarta.persistence.*;
 
@@ -7,11 +7,8 @@ public class Jogo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_jogo;
+    @Column(name = "jogo_id")
+    private Integer id;
 
     private String nome;
-
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
 }

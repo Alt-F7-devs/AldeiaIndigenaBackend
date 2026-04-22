@@ -1,18 +1,25 @@
-package com.altf7.sei.model;
+package com.altf7.sei.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 
 //essa constraint é para garantir que a combinação de aluno e sala não se repita
 @Entity
 @Table(
-        uniqueConstraints = @UniqueConstraint(columnNames = {"aluno_id", "sala_id"})
+    name = "presenca",
+    schema = "sei_db",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"aluno_id", "sala_id"})
 )
+@Getter
+@Setter
 public class Presenca {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_presenca;
+    @Column(name = "presenca_id")
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "aluno_id")

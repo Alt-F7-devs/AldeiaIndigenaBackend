@@ -1,4 +1,4 @@
-package com.altf7.sei.model;
+package com.altf7.sei.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -28,4 +28,5 @@ public class Sala {
 
     @OneToMany(mappedBy = "sala")
     private List<Presenca> presencas;
+
 }
