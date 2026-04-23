@@ -1,4 +1,4 @@
-package com.altf7.sei.controler;
+package com.altf7.sei.controller;
 
 import com.altf7.sei.dto.LoginResponseDTO;
 import com.altf7.sei.dto.aluno.LoginAlunoRequestDTO;
