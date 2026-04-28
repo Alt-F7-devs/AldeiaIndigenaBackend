@@ -11,14 +11,11 @@ import lombok.Setter;
 public class Professor {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "professor_id")
+        @Column(name = "id_professor")
         private Integer id_professor;
 
         @Column(name = "nome", nullable = false)
         private String nome;
-
-        @Column(name = "materia", nullable = false)
-        private String materia;
 
         @Column(name = "cpf", nullable = false, unique = true)
         private String cpf; // login
