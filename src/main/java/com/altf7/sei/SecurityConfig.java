@@ -25,6 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/admin").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/admin/aluno").permitAll()
                         .anyRequest().permitAll()
                 );
 

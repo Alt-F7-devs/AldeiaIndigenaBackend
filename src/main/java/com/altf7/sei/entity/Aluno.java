@@ -13,7 +13,7 @@ import java.util.List;
 public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "aluno_id")
+    @Column(name = "id_aluno", nullable = false)
     private Integer id_aluno;
 
     @Column(name = "nome", nullable = false)
@@ -24,6 +24,9 @@ public class Aluno {
 
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
+
+    @Column(name = "admin_login", nullable = false)
+    private Integer admin_login;
 
     @OneToMany(mappedBy = "aluno")
     private List<Presenca> presencas;
