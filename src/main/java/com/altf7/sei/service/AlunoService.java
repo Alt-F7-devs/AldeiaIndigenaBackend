@@ -79,7 +79,6 @@ public class AlunoService {
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado, tente novamente!"));
 
         if(req.nome() != null) aluno.setNome(req.nome());
-        if(req.cgm() != null) aluno.setCgm(req.cgm());
         if(req.senha() != null) aluno.setSenha(passwordEncoder.encode(req.senha()));
 
         alunoRepository.save(aluno);

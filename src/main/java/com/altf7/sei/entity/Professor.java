@@ -22,4 +22,7 @@ public class Professor {
 
         @Column(name = "senha", nullable = false, length = 100)
         private String senha;
+
+        @Column(name = "admin_login", nullable = false)
+        private Integer admin_login;
 }

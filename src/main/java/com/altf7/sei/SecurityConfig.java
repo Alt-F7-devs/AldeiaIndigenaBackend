@@ -26,6 +26,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/admin").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/admin/aluno").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/admin/professor").permitAll()
                         .anyRequest().permitAll()
                 );
 
