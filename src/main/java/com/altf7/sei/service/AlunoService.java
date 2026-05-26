@@ -4,6 +4,8 @@ import com.altf7.sei.dto.aluno.AlunoRequestDTO;
 import com.altf7.sei.dto.aluno.AlunoResponseDTO;
 import com.altf7.sei.entity.Aluno;
 import com.altf7.sei.repository.AlunoRepository;
+import com.altf7.sei.validator.PasswordValidator;
+import com.altf7.sei.validator.ValidatorCredentialsExceptionAluno;
 import jakarta.persistence.EntityManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,28 +19,22 @@ public class AlunoService {
     private final AlunoRepository alunoRepository;
     private final PasswordEncoder passwordEncoder;
     private final EntityManager entityManager;
+    private final PasswordValidator passwordValidator;
+    private final ValidatorCredentialsExceptionAluno validatorCredentialsExceptionAluno;
 
-    public AlunoService(AlunoRepository alunoRepository, PasswordEncoder passwordEncoder, EntityManager entityManager) {
+
+    public AlunoService(AlunoRepository alunoRepository, PasswordEncoder passwordEncoder, EntityManager entityManager, PasswordValidator passwordValidator, ValidatorCredentialsExceptionAluno validatorCredentialsExceptionAluno) {
         this.alunoRepository = alunoRepository;
         this.passwordEncoder = passwordEncoder;
         this.entityManager = entityManager;
+        this.passwordValidator = passwordValidator;
+        this.validatorCredentialsExceptionAluno = validatorCredentialsExceptionAluno;
     }
 
     @Transactional
     public Aluno criarAluno(AlunoRequestDTO req) {
-        if (req.cgm() == null || req.senha() == null || req.senha().isBlank()) {
-            throw new RuntimeException("Login e senha não deve ser vazio!");
-        } else if (alunoRepository.findByCgm(req.cgm()).isPresent()) {
-            throw new RuntimeException("Login já cadastrado!");
-        } else if (req.senha().length() < 6) {
-            throw new RuntimeException("Senha não pode ter menos que 6 caracteres");
-        } else if (!req.senha().matches(".*\\d.*")) {
-            throw new RuntimeException("Senha deve conter pelo menos 1 número");
-        } else if (!req.senha().matches(".*[a-zA-Z].*")) {
-            throw new RuntimeException("Senha deve conter pelo menos 1 letra");
-        } else if (!req.senha().matches(".*[@#$%!].*")) {
-            throw new RuntimeException("Senha deve possuir no mínimo 1 caractere especial: !,@,#,$,%");
-        }
+            passwordValidator.validatorPassword(req.senha());
+            validatorCredentialsExceptionAluno.validatorCgm(req.cgm());
         try {
             Aluno aluno = new Aluno();
             aluno.setNome(req.nome());

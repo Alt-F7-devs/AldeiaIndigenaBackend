@@ -49,7 +49,7 @@ public class AuthService {
         throw new RuntimeException("Credenciais inválidas");
     }
 
-    public LoginResponseDTO loginAluno(Integer cgm, String senha){
+    public LoginResponseDTO loginAluno(String cgm, String senha){
         Aluno aluno = alunoRepository.findByCgm(cgm)
                 .orElseThrow(() -> new RuntimeException("Credenciais Invalidas"));
         boolean senhaValida = passwordEncoder.matches(senha, aluno.getSenha());

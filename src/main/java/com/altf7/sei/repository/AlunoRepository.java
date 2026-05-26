@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface AlunoRepository extends JpaRepository<Aluno, Integer> {
-    Optional<Aluno> findByCgm(Integer cgm);
+    Optional<Aluno> findByCgm(String cgm);
 }
