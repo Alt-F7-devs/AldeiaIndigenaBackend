@@ -10,8 +10,12 @@ import lombok.Setter;
 @Setter
 public class Admin {
     @Id
-    @Column(name = "login", nullable = false)
-    private Integer login;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_admin", nullable = false)
+    private Integer id_admin;
+
+    @Column(name = "login", nullable = false, length = 11)
+    private String login;
 
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;

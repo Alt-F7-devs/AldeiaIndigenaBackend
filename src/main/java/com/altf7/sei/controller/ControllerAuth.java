@@ -19,18 +19,18 @@ public class ControllerAuth {
     private AuthService authService;
 
     @PostMapping("/login/professor")
-    public ResponseEntity<LoginResponseDTO> loginprofessor(
+    public ResponseEntity<LoginResponseDTO> loginProfessor(
             @RequestBody LoginProfessorRequestDTO dto) {
         return ResponseEntity.ok(
-                authService.loginprofessor(dto.cpf(), dto.senha())
+                authService.loginProfessor(dto.cpf(), dto.senha())
         );
     }
 
     @PostMapping("/login/aluno")
-    public ResponseEntity<LoginResponseDTO> loginaluno(
+    public ResponseEntity<LoginResponseDTO> loginAluno(
             @RequestBody LoginAlunoRequestDTO dto){
         return ResponseEntity.ok(
-                authService.loginaluno(dto.cgm(), dto.senha())
+                authService.loginAluno(dto.cgm(), dto.senha())
         );
     }
 }
