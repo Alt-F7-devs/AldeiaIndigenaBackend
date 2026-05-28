@@ -1,13 +1,11 @@
 package com.altf7.sei.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.List;@Entity
 
-@Entity
 @Table(name = "aluno", schema = "sei_db")
 @Getter
 @Setter
@@ -21,13 +19,11 @@ public class Aluno {
     private String nome;
 
     @Column(name = "cgm", nullable = false, unique = true)
-    private String cgm;
+    private String cgm; // ← Integer para String
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "admin_login", nullable = false)
     private Integer admin_login;
 

@@ -4,8 +4,6 @@ import com.altf7.sei.dto.professor.ProfessorRequestDTO;
 import com.altf7.sei.dto.professor.ProfessorResponseDTO;
 import com.altf7.sei.entity.Professor;
 import com.altf7.sei.repository.ProfessorRepository;
-import com.altf7.sei.validator.PasswordValidator;
-import com.altf7.sei.validator.ValidatorCredentialsExceptionProfessor;
 import jakarta.persistence.EntityManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,22 +17,28 @@ public class ProfessorService {
     private final ProfessorRepository professorRepository;
     private final PasswordEncoder passwordEncoder;
     private final EntityManager entityManager;
-    private final PasswordValidator passwordValidator;
-    private final ValidatorCredentialsExceptionProfessor validatorCredentialsExceptionProfessor;
 
-
-    public ProfessorService(ProfessorRepository professorRepository, PasswordEncoder passwordEncoder, EntityManager entityManager, PasswordValidator passwordValidator, ValidatorCredentialsExceptionProfessor validatorCredentialsExceptionProfessor){
+    public ProfessorService(ProfessorRepository professorRepository, PasswordEncoder passwordEncoder, EntityManager entityManager){
         this.professorRepository = professorRepository;
         this.passwordEncoder = passwordEncoder;
         this.entityManager = entityManager;
-        this.passwordValidator = passwordValidator;
-        this.validatorCredentialsExceptionProfessor = validatorCredentialsExceptionProfessor;
     }
 
     @Transactional
     public Professor criarProfessor(ProfessorRequestDTO req) {
-        passwordValidator.validatorPassword(req.senha());
-        validatorCredentialsExceptionProfessor.validatorCpf(req.cpf());
+        if(req.cpf() == null || req.senha() == null || req.senha().isBlank()) {
+            throw new RuntimeException("Login e senha não deve ser vazio!");
+        } else if(professorRepository.findByCpf(req.cpf()).isPresent()) {
+            throw new RuntimeException("Login já cadastrado!");
+        } else if (req.senha().length() < 6) {
+            throw new RuntimeException("Senha não pode ter menos que 6 caracteres");
+        } else if (!req.senha().matches(".*\\d.*")) {
+            throw new RuntimeException("Senha deve conter pelo menos 1 número");
+        } else if (!req.senha().matches(".*[a-zA-Z].*")) {
+            throw new RuntimeException("Senha deve conter pelo menos 1 letra");
+        } else if (!req.senha().matches(".*[@#$%!].*")) {
+            throw new RuntimeException("Senha deve possuir no mínimo 1 caractere especial: !,@,#,$,%");
+        }
         try {
             Professor prof = new Professor();
             prof.setNome(req.nome());

@@ -11,26 +11,21 @@ import com.altf7.sei.entity.Professor;
 import com.altf7.sei.service.AdminService;
 import com.altf7.sei.service.AlunoService;
 import com.altf7.sei.service.ProfessorService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/admin")
 public class AdminController {
 
-    @Autowired
+
     private final AdminService adminService;
     private final AlunoService alunoService;
-    @Autowired
-    private ProfessorService professorService;
-
-    public AdminController(AdminService adminService, AlunoService alunoService) {
-        this.adminService = adminService;
-        this.alunoService = alunoService;
-    }
+    private final ProfessorService professorService;
 
     // Cria Usuário Admin
     @PostMapping
