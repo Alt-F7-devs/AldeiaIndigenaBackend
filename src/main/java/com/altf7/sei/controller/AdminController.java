@@ -1,6 +1,7 @@
 package com.altf7.sei.controller;
 
 import com.altf7.sei.dto.admin.AdminRequestDTO;
+import com.altf7.sei.dto.admin.AdminResponseDTO;
 import com.altf7.sei.dto.aluno.AlunoRequestDTO;
 import com.altf7.sei.dto.aluno.AlunoResponseDTO;
 import com.altf7.sei.dto.professor.ProfessorRequestDTO;
@@ -29,16 +30,20 @@ public class AdminController {
 
     // Cria Usuário Admin
     @PostMapping
-    public ResponseEntity<Admin> criarAdmin(@RequestBody AdminRequestDTO req) {
+    public ResponseEntity<AdminResponseDTO> criarAdmin(@RequestBody AdminRequestDTO req) {
         Admin adm = adminService.criarAdmin(req);
-        return ResponseEntity.status(201).body(adm);
+        return ResponseEntity.status(201).body(
+                new AdminResponseDTO(adm.getId_admin(), adm.getLogin())
+        );
     }
 
     // Cria Usuário Aluno
     @PostMapping("/aluno")
-    public ResponseEntity<Aluno> criarAluno(@RequestBody AlunoRequestDTO req) {
+    public ResponseEntity<AlunoResponseDTO> criarAluno(@RequestBody AlunoRequestDTO req) {
         Aluno aluno = alunoService.criarAluno(req);
-        return ResponseEntity.status(201).body(aluno);
+        return ResponseEntity.status(201).body(
+                new AlunoResponseDTO(aluno.getId_aluno(), aluno.getNome(), aluno.getCgm())
+        );
     }
 
     // Executa a listagem de usuários Alunos
@@ -68,9 +73,11 @@ public class AdminController {
 
     // Cria Usuário Professor
     @PostMapping("/professor")
-    public ResponseEntity<Professor> criarProfessor(@RequestBody ProfessorRequestDTO req) {
+    public ResponseEntity<ProfessorResponseDTO> criarProfessor(@RequestBody ProfessorRequestDTO req) {
         Professor prof = professorService.criarProfessor(req);
-        return ResponseEntity.status(201).body(prof);
+        return ResponseEntity.status(201).body(
+                new ProfessorResponseDTO(prof.getId_professor(), prof.getNome(), prof.getCpf())
+        );
     }
 
     //  Executa a listagem de usuários Professor
