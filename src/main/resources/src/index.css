@@ -1,0 +1,25 @@
+:root {
+
+  /*Paleta-De-Cores*/
+  --cor-Verde: #3B7113;
+  --cor-Vermelho: #740000;
+  --cor-Marrom: #712A13;
+  --cor-Azul: #135971;
+  --cor-Bege: #E3C9A5;
+
+  /*Fonte utilizada(é preciso ter link no html e o codigo no css)*/
+  --fonte-padrao: @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+  body { font-family: 'Itim', cursive;} 
+
+  /*especificações de tamanhos*/
+  --padding-padrao: 10px;
+  --border-radius: 15px;
+
+  /*body padrão*/
+  background-color: #E3C9A5;
+
+  /* reset das atribuições padrão*/
+  margin: 0;
+  padding: 0
+  
+}
