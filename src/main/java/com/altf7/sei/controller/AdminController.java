@@ -76,7 +76,7 @@ public class AdminController {
     public ResponseEntity<ProfessorResponseDTO> criarProfessor(@RequestBody ProfessorRequestDTO req) {
         Professor prof = professorService.criarProfessor(req);
         return ResponseEntity.status(201).body(
-                new ProfessorResponseDTO(prof.getId_professor(), prof.getNome(), prof.getCpf())
+                new ProfessorResponseDTO(prof.getId_professor(), prof.getNome())
         );
     }
 

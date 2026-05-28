@@ -75,7 +75,7 @@ public class ProfessorService {
                 .orElseThrow(()-> new RuntimeException("Professor não encontrado, tente novamente!"));
 
         if(req.nome() != null) prof.setNome(req.nome());
-        if(req.senha()!= null) prof.setSenha(req.senha());
+        if(req.senha()!= null) prof.setSenha(passwordEncoder.encode(req.senha()));
 
         professorRepository.save(prof);
 
