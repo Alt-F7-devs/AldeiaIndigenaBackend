@@ -10,6 +10,7 @@ import com.altf7.sei.repository.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.altf7.sei.exception.CredenciaisInvalidasException;
 
 import java.util.Optional;
 
@@ -46,17 +47,18 @@ public class AuthService {
                 return new LoginResponseDTO("PROFESSOR");
             }
         }
-        throw new RuntimeException("Credenciais inválidas");
+
+        throw new CredenciaisInvalidasException("CPF ou senha inválidos!");
     }
 
     public LoginResponseDTO loginAluno(String cgm, String senha){
         Aluno aluno = alunoRepository.findByCgm(cgm)
-                .orElseThrow(() -> new RuntimeException("Credenciais Invalidas"));
-        boolean senhaValida = passwordEncoder.matches(senha, aluno.getSenha());
-        if(!senhaValida){
-            throw new RuntimeException("Credenciais Invalidas");
+                .orElseThrow(() -> new CredenciaisInvalidasException("CGM ou senha inválidos!"));
+
+        if (!passwordEncoder.matches(senha, aluno.getSenha())) {
+            throw new CredenciaisInvalidasException("CGM ou senha inválidos!");
         }
-        String tipo = "ALUNO";
-        return new LoginResponseDTO(tipo);
+
+        return new LoginResponseDTO("ALUNO");
     }
 }

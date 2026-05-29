@@ -3,6 +3,7 @@ package com.altf7.sei.handler;
 import com.altf7.sei.dto.error.ErrorResponse;
 import com.altf7.sei.exception.CgmInvalidException;
 import com.altf7.sei.exception.CpfInvalidException;
+import com.altf7.sei.exception.CredenciaisInvalidasException;
 import com.altf7.sei.exception.PasswordInvalidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         ErrorResponse error = new ErrorResponse("Erro interno do servidor", HttpStatus.INTERNAL_SERVER_ERROR.value());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(CredenciaisInvalidasException.class)
+    public ResponseEntity<ErrorResponse> credenciaisInvalidas(CredenciaisInvalidasException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
