@@ -1,6 +1,5 @@
 package com.altf7.sei.validator;
 import com.altf7.sei.exception.CgmInvalidException;
-import com.altf7.sei.exception.PasswordInvalidException;
 import com.altf7.sei.repository.AlunoRepository;
 import org.springframework.stereotype.Component;
 
