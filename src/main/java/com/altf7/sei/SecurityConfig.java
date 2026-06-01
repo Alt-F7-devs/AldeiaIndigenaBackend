@@ -36,6 +36,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,  "/csrf-token").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login/professor").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login/aluno").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/webjars/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

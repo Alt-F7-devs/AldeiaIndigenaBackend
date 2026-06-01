@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.altf7.sei.service.AuthService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 public class ControllerAuth {
 
     @Autowired
