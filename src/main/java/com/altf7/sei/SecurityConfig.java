@@ -1,5 +1,6 @@
 package com.altf7.sei;
 
+import com.altf7.sei.config.CorsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
