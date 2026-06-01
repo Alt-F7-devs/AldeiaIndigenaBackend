@@ -33,8 +33,8 @@ public class AlunoService {
 
     @Transactional
     public Aluno criarAluno(AlunoRequestDTO req) {
-            passwordValidator.validatorPassword(req.senha());
-            validatorCredentialsExceptionAluno.validatorCgm(req.cgm());
+        passwordValidator.validatorPassword(req.senha());
+        validatorCredentialsExceptionAluno.validatorCgm(req.cgm());
         try {
             Aluno aluno = new Aluno();
             aluno.setNome(req.nome());
