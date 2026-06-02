@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
+import com.altf7.sei.exception.CredenciaisInvalidasException;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,17 +54,17 @@ public class AuthService {
             }
         }
 
-        throw new RuntimeException("Credenciais inválidas");
+        throw new CredenciaisInvalidasException("Credenciais inválidas");
     }
 
     public LoginResponseDTO loginAluno(String cgm, String senha,
                                        HttpServletRequest request,
                                        HttpServletResponse response) {
         Aluno aluno = alunoRepository.findByCgm(cgm)
-                .orElseThrow(() -> new RuntimeException("Credenciais inválidas"));
+                .orElseThrow(() -> new CredenciaisInvalidasException("Credenciais inválidas"));
 
         if (!passwordEncoder.matches(senha, aluno.getSenha())) {
-            throw new RuntimeException("Credenciais inválidas");
+            throw new CredenciaisInvalidasException("Credenciais inválidas");
         }
 
         autenticar("ROLE_ALUNO", cgm, request, response);
