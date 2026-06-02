@@ -3,11 +3,14 @@ package com.altf7.sei.handler;
 import com.altf7.sei.dto.error.ErrorResponse;
 import com.altf7.sei.exception.CgmInvalidException;
 import com.altf7.sei.exception.CpfInvalidException;
+import com.altf7.sei.exception.JogoInvalidException;
 import com.altf7.sei.exception.PasswordInvalidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -34,5 +37,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         ErrorResponse error = new ErrorResponse("Erro interno do servidor", HttpStatus.INTERNAL_SERVER_ERROR.value());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(JogoInvalidException.JogoNotFoundException.class)
+    public ResponseEntity<ErrorResponse> jogoNotFound(JogoInvalidException.JogoNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }

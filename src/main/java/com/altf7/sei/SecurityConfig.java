@@ -28,20 +28,29 @@ public class SecurityConfig {
                         .csrfTokenRepository(tokenRepository)
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                         .ignoringRequestMatchers(
-                                "/auth/login/professor",
-                                "/auth/login/aluno"
+                                "/api/v1/auth/login/professor",
+                                "/api/v1/auth/login/aluno",
+                                "/api/v1/jogos",
+                                "/api/v1/jogos/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET,  "/csrf-token").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login/professor").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login/aluno").permitAll()
+                        .requestMatchers(HttpMethod.GET,  "/api/v1/csrf-token").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login/professor").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login/aluno").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**",
                                 "/webjars/**"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/jogos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/jogos").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/jogos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/jogos/{id}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/jogos/{id}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
