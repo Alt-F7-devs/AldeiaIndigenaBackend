@@ -7,34 +7,33 @@ import org.springframework.stereotype.Component;
 public class PasswordValidator {
 
     public void validatorPassword(String senha) {
-        validatorSize(senha);
+        validatorSize(senha);   // já trata null e < 6
         validatorNumber(senha);
         validatorEspecialCaracter(senha);
-        validatorNull(senha);
+        validatorLetter(senha);
     }
 
     private void validatorSize(String senha) {
-        if(senha == null || senha.length() < 6) {
+        if (senha == null || senha.trim().isEmpty() || senha.length() < 6) {
             throw new PasswordInvalidException("ERROR: Senha não pode conter menos que 6 caracteres");
         }
     }
 
     private void validatorNumber(String senha) {
-        if(!senha.matches(".*\\d.*")) {
+        if (!senha.matches(".*\\d.*")) {
             throw new PasswordInvalidException("ERROR: Senha deve conter pelo menos 1 número");
         }
     }
 
+    private void validatorLetter(String senha) {
+        if (!senha.matches(".*[a-zA-Z].*")) {
+            throw new PasswordInvalidException("ERROR: Senha deve conter pelo menos 1 letra");
+        }
+    }
+
     private void validatorEspecialCaracter(String senha) {
-        if(!senha.matches(".*[@#$%!].*")) {
+        if (!senha.matches(".*[@#$%!].*")) {
             throw new PasswordInvalidException("ERROR: Senha deve possuir no mínimo 1 caractere especial");
         }
     }
-
-    private void validatorNull(String senha) {
-        if (senha.isBlank() || senha == null) {
-            throw new PasswordInvalidException("ERROR: Campo não pode estar em branco!");
-        }
-    }
-
 }
