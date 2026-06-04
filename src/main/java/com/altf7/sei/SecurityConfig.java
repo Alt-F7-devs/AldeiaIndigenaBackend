@@ -1,5 +1,6 @@
 package com.altf7.sei;
 
+import com.altf7.sei.config.CorsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
+import org.springframework.context.annotation.Bean;
 
 @Configuration
 public class SecurityConfig {
@@ -32,6 +36,7 @@ public class SecurityConfig {
         CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
 
         http
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(tokenRepository)
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
@@ -75,7 +80,18 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable())
                 );
         return http.build();
+    }
+
+    @Bean
+    public CookieSerializer cookieSerializer() {
+        DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+        serializer.setSameSite("None");
+        serializer.setUseSecureCookie(true); // true em produção com HTTPS
+        return serializer;
     }
 }
