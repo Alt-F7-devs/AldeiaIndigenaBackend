@@ -18,11 +18,13 @@ import org.springframework.context.annotation.Bean;
 @Configuration
 public class SecurityConfig {
 
-    private final CorsConfig corsConfig;
-
-    public SecurityConfig(CorsConfig corsConfig) {
-        this.corsConfig = corsConfig;
-    }
+    private static final String JOGOS_API = "/api/v1/jogos";
+    private static final String JOGOS_API_ID = "/api/v1/jogos/{id}";
+    private static final String LOGIN_API_PROFESSOR = "/api/v1/auth/login/professor";
+    private static final String LOGIN_API_ALUNO = "/api/v1/auth/login/aluno";
+    private static final String ADMIN_API = "/api/v1/admin";
+    private static final String ALUNO_API = "/api/v1/admin/aluno";
+    private static final String ALUNO_API_ID = "/api/v1/admin/aluno/{id_aluno}";
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,14 +41,41 @@ public class SecurityConfig {
                         .csrfTokenRepository(tokenRepository)
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                         .ignoringRequestMatchers(
-                                "/auth/login/professor",
-                                "/auth/login/aluno"
+                                LOGIN_API_PROFESSOR,
+                                LOGIN_API_ALUNO,
+                                JOGOS_API,
+                                JOGOS_API_ID,
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                ADMIN_API,
+                                ALUNO_API,
+                                ALUNO_API_ID
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET,  "/csrf-token").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login/professor").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login/aluno").permitAll()
+                        .requestMatchers(HttpMethod.GET,  "/api/v1/csrf-token").permitAll()
+                        .requestMatchers(HttpMethod.POST, LOGIN_API_PROFESSOR).permitAll()
+                        .requestMatchers(HttpMethod.POST, LOGIN_API_ALUNO).permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/webjars/**"
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.POST, JOGOS_API).permitAll()
+                        .requestMatchers(HttpMethod.GET, JOGOS_API).permitAll()
+                        .requestMatchers(HttpMethod.PUT, JOGOS_API_ID).permitAll()
+                        .requestMatchers(HttpMethod.GET, JOGOS_API_ID).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, JOGOS_API_ID).permitAll()
+                        .requestMatchers(HttpMethod.POST, ADMIN_API).permitAll()
+                        .requestMatchers(HttpMethod.POST, ALUNO_API).permitAll()
+                        .requestMatchers(HttpMethod.PUT, ALUNO_API).permitAll()
+                        .requestMatchers(HttpMethod.GET, ALUNO_API).permitAll()
+                        .requestMatchers(HttpMethod.GET, ALUNO_API_ID).permitAll()
+                        .requestMatchers(HttpMethod.PATCH, ALUNO_API_ID).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, ALUNO_API_ID).permitAll()
+                        .requestMatchers(HttpMethod.GET, ALUNO_API).permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
