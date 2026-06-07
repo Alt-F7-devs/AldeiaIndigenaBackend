@@ -2,8 +2,10 @@ package com.altf7.sei.service;
 
 import com.altf7.sei.dto.admin.AdminRequestDTO;
 import com.altf7.sei.entity.Admin;
+import com.altf7.sei.exception.InternalServerError;
 import com.altf7.sei.repository.AdminRepository;
 import jakarta.persistence.EntityManager;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ public class AdminService {
         this.entityManager = entityManager;
     }
 
+    /* Criar user Admin */
     @Transactional
     public Admin criarAdmin(AdminRequestDTO req) {
         if (req.login() == null || req.senha().isBlank()) {
@@ -43,8 +46,8 @@ public class AdminService {
             adm.setSenha(passwordEncoder.encode(req.senha()));
             entityManager.merge(adm);
             return adm;
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Erro ao criar Admin:"+e.getMessage());
+        } catch (DataAccessException ex) {
+            throw new InternalServerError.AdminInternalServerError();
         }
     }
 }

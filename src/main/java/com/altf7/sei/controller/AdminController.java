@@ -23,7 +23,6 @@ import java.util.List;
 @RequestMapping("/api/v1/admin")
 public class AdminController {
 
-
     private final AdminService adminService;
     private final AlunoService alunoService;
     private final ProfessorService professorService;

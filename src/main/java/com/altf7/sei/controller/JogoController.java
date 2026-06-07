@@ -16,29 +16,32 @@ import java.util.List;
 public class JogoController {
     private final JogoService jogoService;
 
+    /* Listar jogos já cadastrados (GERAL) */
     @GetMapping
     public ResponseEntity<List<JogoResponseDTO>> listar() {
         return ResponseEntity.ok(jogoService.listar());
     }
 
+    /* Listar jogos já cadastrados (ID) */
     @GetMapping("/{id}")
     public ResponseEntity<JogoResponseDTO> buscar(@PathVariable Integer id) {
-        return ResponseEntity.ok(jogoService.buscarporid(id));
+        return ResponseEntity.ok(jogoService.buscarPorId(id));
     }
 
+    /* Cria Jogo */
     @PostMapping
-    public ResponseEntity<JogoResponseDTO> criar(@RequestBody JogoRequestDTO request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(jogoService.criar(request));
+    public ResponseEntity<JogoResponseDTO> criarJogo(@RequestBody JogoRequestDTO request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(jogoService.criarJogo(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<JogoResponseDTO> atualizar(@PathVariable Integer id, @RequestBody JogoRequestDTO request) {
-        return ResponseEntity.ok(jogoService.atualizar(id, request));
+    public ResponseEntity<JogoResponseDTO> atualizarJogo(@PathVariable Integer id, @RequestBody JogoRequestDTO request) {
+        return ResponseEntity.ok(jogoService.atualizarJogo(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
-        jogoService.deletar(id);
+    public ResponseEntity<Void> deletarJogo(@PathVariable Integer id) {
+        jogoService.deletarJogo(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -27,6 +27,10 @@ public class Aluno {
     @Column(name = "admin_login", nullable = false)
     private Integer admin_login;
 
+    @ManyToOne
+    @JoinColumn(name= "sala_id_sala")
+    private Sala sala;
+
     @OneToMany(mappedBy = "aluno")
     private List<Presenca> presencas;
 }

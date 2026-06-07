@@ -4,6 +4,7 @@ import com.altf7.sei.dto.jogo.JogoRequestDTO;
 import com.altf7.sei.dto.jogo.JogoResponseDTO;
 import com.altf7.sei.entity.Admin;
 import com.altf7.sei.entity.Jogo;
+import com.altf7.sei.exception.AdminInvalidException;
 import com.altf7.sei.exception.JogoInvalidException;
 import com.altf7.sei.repository.AdminRepository;
 import com.altf7.sei.repository.JogoRepository;
@@ -21,6 +22,7 @@ public class JogoService {
     private final JogoValidator jogoValidator;
     private final AdminRepository adminRepository;
 
+    /* Listar jogos já cadastrados (GERAL) */
     public List<JogoResponseDTO> listar(){
         return jogoRepository.findAll()
                 .stream()
@@ -28,16 +30,18 @@ public class JogoService {
                 .toList();
     }
 
-    public JogoResponseDTO buscarporid(Integer id){
+    /* Listar jogos já cadastrados (ID) */
+    public JogoResponseDTO buscarPorId(Integer id){
         return jogoRepository.findById(id)
                 .map(JogoResponseDTO::from)
                 .orElseThrow(() -> new JogoInvalidException.JogoNotFoundException(id));
     }
 
-    public JogoResponseDTO criar(JogoRequestDTO request) {
+    /* Cria Jogo */
+    public JogoResponseDTO criarJogo(JogoRequestDTO request) {
         jogoValidator.validatorNome(request.nome());
         Admin admin = adminRepository.findById(request.admin_login())
-                .orElseThrow(() -> new RuntimeException("Admin não encontrado"));
+                .orElseThrow(AdminInvalidException.AdminNotFoundExceptionAll::new);
         Jogo jogo = new Jogo();
         jogo.setNome(request.nome());
         jogo.setAdmin(admin);
@@ -45,7 +49,8 @@ public class JogoService {
         return JogoResponseDTO.from(jogoRepository.save(jogo));
     }
 
-    public JogoResponseDTO atualizar(Integer id, JogoRequestDTO request) {
+    /* Atualizar dados de Jogo */
+    public JogoResponseDTO atualizarJogo(Integer id, JogoRequestDTO request) {
         jogoValidator.validatorNome(request.nome());
         Jogo jogo = jogoRepository.findById(id)
                 .orElseThrow(() -> new JogoInvalidException.JogoNotFoundException(id));
@@ -53,7 +58,8 @@ public class JogoService {
         return JogoResponseDTO.from(jogoRepository.save(jogo));
     }
 
-    public void deletar(Integer id) {
+    /* Deletar Jogo */
+    public void deletarJogo(Integer id) {
         if (!jogoRepository.existsById(id)) {
             throw new JogoInvalidException.JogoNotFoundException(id);
         }
