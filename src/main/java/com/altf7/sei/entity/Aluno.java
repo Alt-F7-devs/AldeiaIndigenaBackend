@@ -4,26 +4,32 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.List;@Entity
 
-@Entity
 @Table(name = "aluno", schema = "sei_db")
 @Getter
 @Setter
 public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "aluno_id")
+    @Column(name = "id_aluno", nullable = false)
     private Integer id_aluno;
 
     @Column(name = "nome", nullable = false)
     private String nome;
 
     @Column(name = "cgm", nullable = false, unique = true)
-    private Integer cgm;
+    private String cgm; // ← Integer para String
 
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
+
+    @Column(name = "admin_login", nullable = false)
+    private Integer admin_login;
+
+    @ManyToOne
+    @JoinColumn(name= "sala_id_sala")
+    private Sala sala;
 
     @OneToMany(mappedBy = "aluno")
     private List<Presenca> presencas;
