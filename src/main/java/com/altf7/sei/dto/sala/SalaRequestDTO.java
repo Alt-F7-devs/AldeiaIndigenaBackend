@@ -1,8 +1,10 @@
 package com.altf7.sei.dto.sala;
 
+import java.time.LocalDate;
+
 public record SalaRequestDTO(
-        Integer admin_id,
-        Integer jogo_id_jogo,
-        Integer professor_id_professor,
-        String num_sa
-) {}
+        String numSa,
+        LocalDate data
+)
+
+{}

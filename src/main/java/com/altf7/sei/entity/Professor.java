@@ -1,6 +1,5 @@
 package com.altf7.sei.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,20 +11,18 @@ import lombok.Setter;
 public class Professor {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "id_professor")
+        @Column(name = "professor_id")
         private Integer id_professor;
 
         @Column(name = "nome", nullable = false)
         private String nome;
 
+        @Column(name = "materia", nullable = false)
+        private String materia;
+
         @Column(name = "cpf", nullable = false, unique = true)
         private String cpf; // login
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @Column(name = "senha", nullable = false, length = 100)
         private String senha;
-
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @Column(name = "admin_login", nullable = false)
-        private Integer admin_login;
 }
