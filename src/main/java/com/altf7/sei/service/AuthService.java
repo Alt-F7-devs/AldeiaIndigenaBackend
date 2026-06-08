@@ -1,90 +1,52 @@
 package com.altf7.sei.service;
 
-import com.altf7.sei.dto.LoginResponseDTO;
-import com.altf7.sei.entity.Admin;
 import com.altf7.sei.entity.Aluno;
 import com.altf7.sei.entity.Professor;
+import com.altf7.sei.dto.LoginResponseDTO;
 import com.altf7.sei.repository.AdminRepository;
 import com.altf7.sei.repository.AlunoRepository;
 import com.altf7.sei.repository.ProfessorRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
-import com.altf7.sei.exception.CredenciaisInvalidasException;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
-    private final ProfessorRepository professorRepository;
-    private final AlunoRepository alunoRepository;
-    private final AdminRepository adminRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private ProfessorRepository professorRepository;
 
-    public LoginResponseDTO loginProfessor(String cpf, String senha,
-                                           HttpServletRequest request,
-                                           HttpServletResponse response) {
-        // tenta login como Admin primeiro
-        Optional<Admin> adminOpt = adminRepository.findByLogin(cpf);
-        if (adminOpt.isPresent()) {
-            Admin admin = adminOpt.get();
-            if (passwordEncoder.matches(senha, admin.getSenha())) {
-                autenticar("ROLE_ADMIN", cpf, request, response);
-                return new LoginResponseDTO("ADMIN");
-            }
+    @Autowired
+    private AlunoRepository alunoRepository;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public LoginResponseDTO loginprofessor(String cpf, String senha){
+        Professor prof = professorRepository.findByCpf(cpf)
+            .orElseThrow(() -> new RuntimeException("Credenciais Invalidas"));
+        boolean senhaValida = passwordEncoder.matches(senha, prof.getSenha());
+        if (!senhaValida){
+            throw new RuntimeException("Credenciais Invalidas");
         }
-
-        // tenta login como Professor
-        Optional<Professor> profOpt = professorRepository.findByCpf(cpf);
-        if (profOpt.isPresent()) {
-            Professor prof = profOpt.get();
-            if (passwordEncoder.matches(senha, prof.getSenha())) {
-                autenticar("ROLE_PROFESSOR", cpf, request, response);
-                return new LoginResponseDTO("PROFESSOR");
-            }
-        }
-
-        throw new CredenciaisInvalidasException("Credenciais inválidas");
+        boolean isAdmin = adminRepository
+                .findByLogin(Integer.valueOf(prof.getCpf()))
+                .isPresent();
+        String tipo = isAdmin ? "ADMIN" : "PROFESSOR";
+        return new LoginResponseDTO(tipo);
     }
 
-    public LoginResponseDTO loginAluno(String cgm, String senha,
-                                       HttpServletRequest request,
-                                       HttpServletResponse response) {
+    public LoginResponseDTO loginaluno(Integer cgm, String senha){
         Aluno aluno = alunoRepository.findByCgm(cgm)
-                .orElseThrow(() -> new CredenciaisInvalidasException("Credenciais inválidas"));
-
-        if (!passwordEncoder.matches(senha, aluno.getSenha())) {
-            throw new CredenciaisInvalidasException("Credenciais inválidas");
+                .orElseThrow(() -> new RuntimeException("Credenciais Invalidas"));
+        boolean senhaValida = passwordEncoder.matches(senha, aluno.getSenha());
+        if(!senhaValida){
+            throw new RuntimeException("Credenciais Invalidas");
         }
-
-        autenticar("ROLE_ALUNO", cgm, request, response);
-        return new LoginResponseDTO("ALUNO");
-    }
-
-    private void autenticar(String role, String principal,
-                            HttpServletRequest request,
-                            HttpServletResponse response) {
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(
-                        principal, null, List.of(new SimpleGrantedAuthority(role))
-                );
-
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(auth);
-        SecurityContextHolder.setContext(context);
-
-        // salva na sessão HTTP para requisições futuras
-        new HttpSessionSecurityContextRepository()
-                .saveContext(context, request, response);
+        String tipo = "ALUNO";
+        return new LoginResponseDTO(tipo);
     }
 }

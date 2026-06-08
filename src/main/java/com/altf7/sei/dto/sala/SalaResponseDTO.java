@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 public record SalaResponseDTO(
         Integer id_sala,
-        String num_sa,
+        String numSa,
         LocalDate data,
 
-        String nome,
+        String professorNome,
         String jogoNome
 )
 

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface AlunoRepository extends JpaRepository<Aluno, Integer> {
-    Optional<Aluno> findByCgm(String cgm);
+public interface AlunoRepository extends JpaRepository<Aluno, Long> {
+    Optional<Aluno> findByCgm(Integer cgm);
 }
