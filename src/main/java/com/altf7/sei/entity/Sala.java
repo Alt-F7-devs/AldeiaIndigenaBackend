@@ -3,6 +3,7 @@ package com.altf7.sei.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class Sala {
 
     @PrePersist
     public void prePersist() {
-        this.data = LocalDate.now();
+        this.data = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
     }
 
     @ManyToOne

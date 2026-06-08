@@ -43,7 +43,6 @@ public class GlobalExceptionHandler {
    /* Internal Server Error 500 */
    @ExceptionHandler(InternalServerError.class)
    public ResponseEntity<ErrorResponse> handleInternalErrors(InternalServerError ex) {
-       ex.printStackTrace();
        ErrorResponse error = new ErrorResponse(ex.getMessage(), 500);  // ← getMessage() = "Não foi possível criar Sala!"
        return ResponseEntity.status(500).body(error);
    }
