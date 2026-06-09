@@ -3,17 +3,24 @@ package com.altf7.sei.service;
 import com.altf7.sei.dto.professor.ProfessorRequestDTO;
 import com.altf7.sei.dto.professor.ProfessorResponseDTO;
 import com.altf7.sei.entity.Professor;
+import com.altf7.sei.entity.Sala;
+import com.altf7.sei.exception.InternalServerError;
+import com.altf7.sei.exception.ProfessorInvalidException;
 import com.altf7.sei.repository.ProfessorRepository;
+import com.altf7.sei.repository.SalaRepository;
 import com.altf7.sei.validator.PasswordValidator;
 import com.altf7.sei.validator.ValidatorCredentialsExceptionProfessor;
 import jakarta.persistence.EntityManager;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProfessorService {
 
     private final ProfessorRepository professorRepository;
@@ -21,16 +28,9 @@ public class ProfessorService {
     private final EntityManager entityManager;
     private final PasswordValidator passwordValidator;
     private final ValidatorCredentialsExceptionProfessor validatorCredentialsExceptionProfessor;
+    private final SalaRepository salaRepository;
 
-
-    public ProfessorService(ProfessorRepository professorRepository, PasswordEncoder passwordEncoder, EntityManager entityManager, PasswordValidator passwordValidator, ValidatorCredentialsExceptionProfessor validatorCredentialsExceptionProfessor){
-        this.professorRepository = professorRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.entityManager = entityManager;
-        this.passwordValidator = passwordValidator;
-        this.validatorCredentialsExceptionProfessor = validatorCredentialsExceptionProfessor;
-    }
-
+    /* Cria entidade professor */
     @Transactional
     public Professor criarProfessor(ProfessorRequestDTO req) {
         passwordValidator.validatorPassword(req.senha());
@@ -42,37 +42,35 @@ public class ProfessorService {
             prof.setSenha(passwordEncoder.encode(req.senha()));
             prof.setAdmin_login(req.admin_login());
             return entityManager.merge(prof);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Erro ao criar Professor" + e.getMessage());
+        } catch (DataAccessException ex) {
+            throw new InternalServerError.ProfessorInternalServerError();
         }
     }
 
+    /* Listagem Geral de Professores cadastrados */
     public List<ProfessorResponseDTO> listarProfessor() {
         try {
             return professorRepository.findAll()
                     .stream()
                     .map(professor -> new ProfessorResponseDTO(professor.getId_professor(), professor.getNome()))
                     .toList();
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Erro ao listar Professores" + e.getMessage());
+        } catch (DataAccessException ex) {
+            throw new InternalServerError.ProfessorListInternalServerError();
         }
     }
 
+    /* Listagem de Professor por ID */
     public List<ProfessorResponseDTO> listarProfessorPorId(Integer id_professor) {
-        try {
-            return professorRepository.findById(id_professor)
-                    .stream()
-                    .map(professor -> new ProfessorResponseDTO(professor.getId_professor(), professor.getNome()))
-                    .toList();
-        }catch (RuntimeException e) {
-            throw new RuntimeException("Erro ao listar Professores"+e.getMessage());
-        }
+        Professor professor = professorRepository.findById(id_professor)
+                .orElseThrow(() -> new ProfessorInvalidException.ProfessorNotFoundExceptionId(id_professor));
+        return List.of(new ProfessorResponseDTO(professor.getId_professor(), professor.getNome()));
     }
 
+    /* Edição de dados de cadastro de Professor */
     @Transactional
     public ProfessorResponseDTO editarProfessor(Integer id_professor, ProfessorRequestDTO req) {
         Professor prof = professorRepository.findById(id_professor)
-                .orElseThrow(()-> new RuntimeException("Professor não encontrado, tente novamente!"));
+                .orElseThrow(ProfessorInvalidException.ProfessorNotFoundExceptionAll::new);
 
         if(req.nome() != null) prof.setNome(req.nome());
         if(req.senha()!= null) prof.setSenha(passwordEncoder.encode(req.senha()));
@@ -82,9 +80,17 @@ public class ProfessorService {
         return new ProfessorResponseDTO(prof.getId_professor(), prof.getNome());
     }
 
+    /* Deletar entidade Professor */
+    @Transactional
     public void excluirProfessor(Integer id_professor){
         Professor prof = professorRepository.findById(id_professor)
-                .orElseThrow(()-> new RuntimeException("Professor não encontrado, tente novamente!"));
+                .orElseThrow(ProfessorInvalidException.ProfessorNotFoundExceptionAll::new);
+
+        List<Sala> salas = salaRepository.findByProfessor(prof);
+        if (!salas.isEmpty()) {
+            throw new ProfessorInvalidException.ProfessorComSalasVinculadasException();
+        }
+
         professorRepository.delete(prof);
     }
 }

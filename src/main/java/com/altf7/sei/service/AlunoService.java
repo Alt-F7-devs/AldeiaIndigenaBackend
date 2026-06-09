@@ -3,17 +3,22 @@ package com.altf7.sei.service;
 import com.altf7.sei.dto.aluno.AlunoRequestDTO;
 import com.altf7.sei.dto.aluno.AlunoResponseDTO;
 import com.altf7.sei.entity.Aluno;
+import com.altf7.sei.exception.AlunoInvalidException;
+import com.altf7.sei.exception.InternalServerError;
 import com.altf7.sei.repository.AlunoRepository;
 import com.altf7.sei.validator.PasswordValidator;
 import com.altf7.sei.validator.ValidatorCredentialsExceptionAluno;
 import jakarta.persistence.EntityManager;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AlunoService {
 
     private final AlunoRepository alunoRepository;
@@ -22,15 +27,7 @@ public class AlunoService {
     private final PasswordValidator passwordValidator;
     private final ValidatorCredentialsExceptionAluno validatorCredentialsExceptionAluno;
 
-
-    public AlunoService(AlunoRepository alunoRepository, PasswordEncoder passwordEncoder, EntityManager entityManager, PasswordValidator passwordValidator, ValidatorCredentialsExceptionAluno validatorCredentialsExceptionAluno) {
-        this.alunoRepository = alunoRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.entityManager = entityManager;
-        this.passwordValidator = passwordValidator;
-        this.validatorCredentialsExceptionAluno = validatorCredentialsExceptionAluno;
-    }
-
+    /* Cria Aluno */
     @Transactional
     public Aluno criarAluno(AlunoRequestDTO req) {
         passwordValidator.validatorPassword(req.senha());
@@ -42,37 +39,46 @@ public class AlunoService {
             aluno.setSenha(passwordEncoder.encode(req.senha()));
             aluno.setAdmin_login(req.admin_login());
             return entityManager.merge(aluno);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Erro ao criar Aluno" + e.getMessage());
+        } catch (DataAccessException ex) {
+            throw new InternalServerError.AlunoInternalServerError();
         }
     }
 
+    /* Listagem Geral de Alunos cadastrados */
     public List<AlunoResponseDTO> listarAluno() {
         try {
             return alunoRepository.findAll()
                     .stream()
                     .map(aluno -> new AlunoResponseDTO(aluno.getId_aluno(), aluno.getNome(), aluno.getCgm()))
                     .toList();
-        }catch (RuntimeException e) {
-            throw new RuntimeException("Erro ao listar Alunos"+e.getMessage());
+        }catch (DataAccessException ex) {
+            throw new InternalServerError.AlunoListInternalServerError();
         }
     }
 
+    /* Listagem de Aluno por ID */
     public List<AlunoResponseDTO> listarAlunoPorId(Integer id_aluno) {
+        Aluno aluno = alunoRepository.findById(id_aluno)
+                .orElseThrow(() -> new AlunoInvalidException.AlunoNotFoundExceptionId(id_aluno));
+        return List.of(new AlunoResponseDTO(aluno.getId_aluno(), aluno.getNome(), aluno.getCgm()));
+    }
+
+    public List<AlunoResponseDTO> listarAlunoPorSala(Integer id_sala) {
         try {
-            return alunoRepository.findById(id_aluno)
+            return alunoRepository.findBySala_IdSala(id_sala)
                     .stream()
                     .map(aluno -> new AlunoResponseDTO(aluno.getId_aluno(), aluno.getNome(), aluno.getCgm()))
                     .toList();
-        }catch (RuntimeException e) {
-            throw new RuntimeException("Erro ao listar Alunos"+e.getMessage());
+        } catch (DataAccessException ex) {
+            throw new InternalServerError.AlunoListInternalServerError();
         }
     }
 
+    /* Edição de dados de cadastro de Aluno */
     @Transactional
     public AlunoResponseDTO editarAluno(Integer id_aluno, AlunoRequestDTO req){
         Aluno aluno = alunoRepository.findById(id_aluno)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado, tente novamente!"));
+                .orElseThrow(AlunoInvalidException.AlunoNotFoundExceptionAll::new);
 
         if(req.nome() != null) aluno.setNome(req.nome());
         if(req.senha() != null) aluno.setSenha(passwordEncoder.encode(req.senha()));
@@ -82,10 +88,11 @@ public class AlunoService {
         return new AlunoResponseDTO(aluno.getId_aluno(),aluno.getNome(),aluno.getCgm());
     }
 
+    /* Deletar entidade Aluno */
     @Transactional
     public void excluirAluno(Integer id_aluno){
         Aluno aluno = alunoRepository.findById(id_aluno)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado, tente novamente!"));
+                .orElseThrow(AlunoInvalidException.AlunoNotFoundExceptionAll::new);
         alunoRepository.delete(aluno);
     }
 }
