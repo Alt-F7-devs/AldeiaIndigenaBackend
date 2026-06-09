@@ -36,9 +36,9 @@ public class SecurityConfig {
     private static final String ADMIN_ALUNO_API_ID = "/api/v1/admin/aluno/{id_aluno}";
     private static final String ADMIN_PROFESSOR_API = "/api/v1/admin/professor";
     private static final String ADMIN_PROFESSOR_API_ID = "/api/v1/admin/professor/{id_professor}";
-    private static final String SALA_API = "/api/v1/{id_sala}/alunos";
+    private static final String SALA_API = "/api/v1/sala";
     private static final String SALA_API_ALUNO = "/{id_sala}/aluno/{id_aluno}";
-    private static final String SALA_API_ALUNO_LIST = "/api/v1/sala/aluno";
+    private static final String SALA_API_ALUNO_LIST = "/api/v1/sala/{id_sala}/alunos";
     private static final String SALA_API_ALUNO_LIST_ID = "/api/v1/sala/aluno/{id_aluno}";
     private static final String SALA_API_ID = "/api/v1/sala/{id_sala}";
     private static final String SALA_API_PROFESSOR = "/api/v1/sala/{id_sala}/professor";
