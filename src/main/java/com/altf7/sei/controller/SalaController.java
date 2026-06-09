@@ -52,9 +52,9 @@ public class SalaController {
     }
 
     // Executa a listagem de usuário Aluno
-    @GetMapping("/aluno")
-    public ResponseEntity<List<AlunoResponseDTO>> listarAlunoSala() {
-        return ResponseEntity.ok(salaService.listarAlunoSala());
+    @GetMapping("/{id_sala}/alunos")
+    public ResponseEntity<List<AlunoResponseDTO>> listarAlunosDaSala(@PathVariable Integer id_sala) {
+        return ResponseEntity.ok(salaService.listarAlunoSala(id_sala));
     }
 
     // Executa a listagem de usuário Aluno por Id

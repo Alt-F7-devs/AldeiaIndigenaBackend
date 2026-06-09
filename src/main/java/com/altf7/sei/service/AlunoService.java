@@ -63,6 +63,17 @@ public class AlunoService {
         return List.of(new AlunoResponseDTO(aluno.getId_aluno(), aluno.getNome(), aluno.getCgm()));
     }
 
+    public List<AlunoResponseDTO> listarAlunoPorSala(Integer id_sala) {
+        try {
+            return alunoRepository.findBySala_IdSala(id_sala)
+                    .stream()
+                    .map(aluno -> new AlunoResponseDTO(aluno.getId_aluno(), aluno.getNome(), aluno.getCgm()))
+                    .toList();
+        } catch (DataAccessException ex) {
+            throw new InternalServerError.AlunoListInternalServerError();
+        }
+    }
+
     /* Edição de dados de cadastro de Aluno */
     @Transactional
     public AlunoResponseDTO editarAluno(Integer id_aluno, AlunoRequestDTO req){

@@ -128,10 +128,9 @@ public class SalaService {
     }
 
     /* Recebe metodo --> listar Aluno geral da Classe AlunoService */
-    public List<AlunoResponseDTO> listarAlunoSala() {
-        return alunoService.listarAluno();
+    public List<AlunoResponseDTO> listarAlunoSala(Integer id_sala) {
+        return alunoService.listarAlunoPorSala(id_sala);
     }
-
     /* Recebe metodo --> listar Aluno por ID da Classe AlunoService */
     public List<AlunoResponseDTO> listarAlunoPorIdSala(Integer id_aluno) {
         return alunoService.listarAlunoPorId(id_aluno);
