@@ -4,7 +4,9 @@ import com.altf7.sei.dto.professor.ProfessorRequestDTO;
 import com.altf7.sei.dto.professor.ProfessorResponseDTO;
 import com.altf7.sei.entity.Professor;
 import com.altf7.sei.exception.PasswordInvalidException;
+import com.altf7.sei.exception.ProfessorInvalidException;
 import com.altf7.sei.repository.ProfessorRepository;
+import com.altf7.sei.repository.SalaRepository;
 import com.altf7.sei.validator.PasswordValidator;
 import com.altf7.sei.validator.ValidatorCredentialsExceptionProfessor;
 import jakarta.persistence.EntityManager;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +49,9 @@ class ProfessorServiceTest {
     private ProfessorService professorService;
 
     private Professor professorMock;
+
+    @Mock
+    private SalaRepository salaRepository;
 
     @BeforeEach
     void setUp() {
@@ -122,13 +128,20 @@ class ProfessorServiceTest {
     }
 
     @Test
-    @DisplayName("Deve retornar lista vazia para ID de professor inexistente")
-    void deveRetornarListaVaziaParaIdInexistente() {
+    @DisplayName("Deve lançar exceção quando professor não for encontrado pelo ID")
+    void deveLancarExcecaoQuandoProfessorNaoExistir() {
         when(professorRepository.findById(99)).thenReturn(Optional.empty());
 
-        List<ProfessorResponseDTO> resultado = professorService.listarProfessorPorId(99);
+        ProfessorInvalidException.ProfessorNotFoundExceptionId ex =
+                assertThrows(
+                        ProfessorInvalidException.ProfessorNotFoundExceptionId.class,
+                        () -> professorService.listarProfessorPorId(99)
+                );
 
-        assertTrue(resultado.isEmpty());
+        assertEquals(
+                "ERROR: Professor não foi encontrado com o ID:99",
+                ex.getMessage()
+        );
     }
 
     @Test
@@ -171,18 +184,29 @@ class ProfessorServiceTest {
     @Test
     @DisplayName("Deve excluir professor com sucesso")
     void deveExcluirProfessorComSucesso() {
-        when(professorRepository.findById(1)).thenReturn(Optional.of(professorMock));
+        when(professorRepository.findById(1))
+                .thenReturn(Optional.of(professorMock));
+
+        when(salaRepository.findByProfessor(professorMock))
+                .thenReturn(Collections.emptyList());
 
         assertDoesNotThrow(() -> professorService.excluirProfessor(1));
+
         verify(professorRepository).delete(professorMock);
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao excluir professor inexistente")
     void deveLancarExcecaoAoExcluirProfessorInexistente() {
-        when(professorRepository.findById(99)).thenReturn(Optional.empty());
+        ProfessorInvalidException.ProfessorNotFoundExceptionAll ex =
+                assertThrows(
+                        ProfessorInvalidException.ProfessorNotFoundExceptionAll.class,
+                        () -> professorService.excluirProfessor(99)
+                );
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> professorService.excluirProfessor(99));
-        assertTrue(ex.getMessage().contains("Professor não encontrado"));
+        assertEquals(
+                "ERROR: Professor não foi encontrado!",
+                ex.getMessage()
+        );
     }
 }

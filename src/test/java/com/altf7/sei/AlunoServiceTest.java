@@ -3,6 +3,7 @@ package com.altf7.sei.service;
 import com.altf7.sei.dto.aluno.AlunoRequestDTO;
 import com.altf7.sei.dto.aluno.AlunoResponseDTO;
 import com.altf7.sei.entity.Aluno;
+import com.altf7.sei.exception.AlunoInvalidException;
 import com.altf7.sei.exception.PasswordInvalidException;
 import com.altf7.sei.repository.AlunoRepository;
 import com.altf7.sei.validator.PasswordValidator;
@@ -123,13 +124,20 @@ class AlunoServiceTest {
     }
 
     @Test
-    @DisplayName("Deve retornar lista vazia quando ID do aluno não existir")
-    void deveRetornarListaVaziaParaIdInexistente() {
+    @DisplayName("Deve lançar exceção quando aluno não for encontrado pelo ID")
+    void deveLancarExcecaoQuandoIdNaoForEncontrado() {
         when(alunoRepository.findById(99)).thenReturn(Optional.empty());
 
-        List<AlunoResponseDTO> resultado = alunoService.listarAlunoPorId(99);
+        AlunoInvalidException.AlunoNotFoundExceptionId ex =
+                assertThrows(
+                        AlunoInvalidException.AlunoNotFoundExceptionId.class,
+                        () -> alunoService.listarAlunoPorId(99)
+                );
 
-        assertTrue(resultado.isEmpty());
+        assertEquals(
+                "ERROR: Aluno não foi encontrado com o ID:99",
+                ex.getMessage()
+        );
     }
 
     @Test
@@ -184,6 +192,6 @@ class AlunoServiceTest {
         when(alunoRepository.findById(99)).thenReturn(Optional.empty());
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> alunoService.excluirAluno(99));
-        assertTrue(ex.getMessage().contains("Aluno não encontrado"));
+        assertTrue(ex.getMessage().contains("ERROR: Aluno não foi encontrado!"));
     }
 }
