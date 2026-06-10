@@ -165,13 +165,13 @@ public class SalaService {
     @Transactional
     public void deletarSala(Integer id_sala) {
         Sala sala = salaRepository.findById(id_sala)
-                .orElseThrow(JogoInvalidException.JogoNotFoundExceptionAll::new);
-        salaRepository.save(sala);
+                .orElseThrow(SalaInvalidException.SalaNotFoundExceptionAll::new);
+        salaRepository.delete(sala);
     }
 
     /* Adiciona jogo (cadastrado) na sala */
     @Transactional
-    public Sala addJogoSala(Integer id_jogo, Integer id_sala) {
+    public Sala addJogoSala(Integer id_sala, Integer id_jogo) {
         try {
             Jogo jogo = jogoRepository.findById(id_jogo)
                     .orElseThrow(JogoInvalidException.JogoNotFoundExceptionAll::new);

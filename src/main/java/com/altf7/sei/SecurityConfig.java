@@ -49,6 +49,7 @@ public class SecurityConfig {
     private static final String PRESENCA_ALUNO_SALA_ID = "/api/v1/presencas/frequencia/{idAluno}";
     private static final String PRESENCA_PROFESSOR_SALA = "/api/v1/presencas/frequencia";
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
