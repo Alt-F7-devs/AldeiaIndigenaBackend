@@ -62,16 +62,21 @@ public class AlunoService {
                 .orElseThrow(() -> new AlunoInvalidException.AlunoNotFoundExceptionId(id_aluno));
         return List.of(new AlunoResponseDTO(aluno.getId_aluno(), aluno.getNome(), aluno.getCgm()));
     }
-
+    /* Listagem de todos os alunos na sala*/
     public List<AlunoResponseDTO> listarAlunoPorSala(Integer id_sala) {
         try {
-            return alunoRepository.findBySala_IdSala(id_sala)
+            return alunoRepository.findBySalaId(id_sala) // findBySala_IdSala → findBySalaId
                     .stream()
                     .map(aluno -> new AlunoResponseDTO(aluno.getId_aluno(), aluno.getNome(), aluno.getCgm()))
                     .toList();
         } catch (DataAccessException ex) {
             throw new InternalServerError.AlunoListInternalServerError();
         }
+    }
+
+    /* Validar presença de aluno */
+    public boolean validarAlunoNaSala(Integer idAluno, Integer idSala) {
+        return alunoRepository.existsAlunoNaSala(idSala, idAluno); // existsBySala_IdSalaAndIdAluno → existsAlunoNaSala
     }
 
     /* Edição de dados de cadastro de Aluno */

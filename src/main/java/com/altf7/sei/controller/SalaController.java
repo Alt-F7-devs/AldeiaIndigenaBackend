@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/sala")
+@RequestMapping("/api/v1/sala")
 public class SalaController {
 
     private final SalaService salaService;

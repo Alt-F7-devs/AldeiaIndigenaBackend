@@ -37,7 +37,7 @@ public class SecurityConfig {
     private static final String ADMIN_PROFESSOR_API = "/api/v1/admin/professor";
     private static final String ADMIN_PROFESSOR_API_ID = "/api/v1/admin/professor/{id_professor}";
     private static final String SALA_API = "/api/v1/sala";
-    private static final String SALA_API_ALUNO = "/{id_sala}/aluno/{id_aluno}";
+    private static final String SALA_API_ALUNO = "/api/v1/sala/{id_sala}/aluno/{id_aluno}";
     private static final String SALA_API_ALUNO_LIST = "/api/v1/sala/{id_sala}/alunos";
     private static final String SALA_API_ALUNO_LIST_ID = "/api/v1/sala/aluno/{id_aluno}";
     private static final String SALA_API_ID = "/api/v1/sala/{id_sala}";
@@ -45,6 +45,9 @@ public class SecurityConfig {
     private static final String SALA_API_JOGO = "/api/v1/sala/{id_sala}/jogos/{id_jogo}";
     private static final String SALA_API_JOGO_LIST = "/api/v1/sala/jogos";
     private static final String SALA_API_JOGO_LIST_ID = "/api/v1/sala/jogos/{id}";
+    private static final String PRESENCA_ALUNO_SALA = "/api/v1/presencas/{cgm}/sala/{idSala}";
+    private static final String PRESENCA_ALUNO_SALA_ID = "/api/v1/presencas/frequencia/{idAluno}";
+    private static final String PRESENCA_PROFESSOR_SALA = "/api/v1/presencas/frequencia";
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -70,9 +73,14 @@ public class SecurityConfig {
                                 JOGOS_API_ID,
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/webjars/**",
                                 ADMIN_API,
                                 ALUNO_API,
-                                ALUNO_API_ID
+                                ALUNO_API_ID,
+                                PRESENCA_ALUNO_SALA,
+                                PRESENCA_ALUNO_SALA_ID,
+                                PRESENCA_PROFESSOR_SALA
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
@@ -124,6 +132,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, SALA_API_JOGO).permitAll()
                         .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST).permitAll()
                         .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST_ID).permitAll()
+                        .requestMatchers(HttpMethod.POST, PRESENCA_ALUNO_SALA).permitAll()
+                        .requestMatchers(HttpMethod.GET, PRESENCA_ALUNO_SALA_ID).permitAll()
+                        .requestMatchers(HttpMethod.GET, PRESENCA_PROFESSOR_SALA).permitAll()
 
                         .anyRequest().authenticated()
                 )
