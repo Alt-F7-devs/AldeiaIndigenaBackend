@@ -123,6 +123,12 @@ public class SalaController {
         return ResponseEntity.ok(salaService.listarJogoSala());
     }
 
+    /* Listar salas por Professor */
+    @GetMapping("/professor/{id_professor}")
+    public ResponseEntity<List<SalaListResponseDTO>> listarSalaPorProfessor(@PathVariable Integer id_professor) {
+        return ResponseEntity.ok(salaService.listarSalaPorProfessor(id_professor));
+    }
+
     /* Listar jogos já cadastrados (ID) */
     @GetMapping("/jogos/{id}")
     public ResponseEntity<JogoResponseDTO> buscarJogoPorIdSala(@PathVariable Integer id) {

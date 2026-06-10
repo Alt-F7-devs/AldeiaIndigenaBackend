@@ -43,6 +43,7 @@ public class SecurityConfig {
     private static final String SALA_API_ALUNO_LIST_ID = "/api/v1/sala/aluno/{id_aluno}";
     private static final String SALA_API_ID = "/api/v1/sala/{id_sala}";
     private static final String SALA_API_PROFESSOR = "/api/v1/sala/{id_sala}/professor";
+    private static final String SALA_API_PROFESSOR_LIST = "/api/v1/sala/professor/{id_professor}";
     private static final String SALA_API_JOGO = "/api/v1/sala/{id_sala}/jogos/{id_jogo}";
     private static final String SALA_API_JOGO_LIST = "/api/v1/sala/jogos";
     private static final String SALA_API_JOGO_LIST_ID = "/api/v1/sala/jogos/{id}";
@@ -144,6 +145,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, SALA_API_JOGO).hasAnyRole("ADMIN", "PROFESSOR")
                         .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST).hasAnyRole("ADMIN", "PROFESSOR", "ALUNO")
                         .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST_ID).hasAnyRole("ADMIN", "PROFESSOR", "ALUNO")
+                        .requestMatchers(HttpMethod.GET, SALA_API_PROFESSOR_LIST).hasAnyRole("ADMIN", "PROFESSOR")
 
                         // Presença - ALUNO registra, PROFESSOR/ADMIN visualiza
                         .requestMatchers(HttpMethod.POST, PRESENCA_ALUNO_SALA).hasAnyRole("ADMIN", "PROFESSOR", "ALUNO")
