@@ -209,7 +209,7 @@ class SalaServiceTest {
         when(alunoRepository.save(any()))
                 .thenReturn(aluno);
 
-        Aluno resultado = salaService.addAlunoSala(1,1);
+        Aluno resultado = salaService.addAlunoSala("1",1);
 
         assertEquals(1, resultado.getId_aluno());
 
@@ -354,7 +354,7 @@ class SalaServiceTest {
 
         assertThrows(
                 AlunoInvalidException.AlunoNotFoundExceptionAll.class,
-                () -> salaService.addAlunoSala(1, 1)
+                () -> salaService.addAlunoSala("1", 1)
         );
     }
 
