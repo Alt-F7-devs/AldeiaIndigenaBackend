@@ -87,4 +87,13 @@ public class AuthService {
         new HttpSessionSecurityContextRepository()
                 .saveContext(context, request, response);
     }
+
+    public void logout(HttpServletRequest request) {
+        SecurityContextHolder.clearContext();
+
+        jakarta.servlet.http.HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+    }
 }
