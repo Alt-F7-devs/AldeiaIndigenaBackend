@@ -16,16 +16,16 @@ import lombok.Setter;
 @Setter
 public class Presenca {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "presenca_id")
-    private Integer id;
+    @EmbeddedId
+    private PresencaId id = new PresencaId();
 
     @ManyToOne
-    @JoinColumn(name = "aluno_id")
+    @MapsId("aluno")
+    @JoinColumn(name = "aluno_id_aluno")
     private Aluno aluno;
 
     @ManyToOne
-    @JoinColumn(name = "sala_id")
+    @MapsId("sala")
+    @JoinColumn(name = "sala_id_sala")
     private Sala sala;
 }

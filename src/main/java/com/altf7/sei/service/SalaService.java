@@ -110,10 +110,10 @@ public class SalaService {
     /* Note: FAZER HANDLER + EXCEPTION */
     /* Adiciona Aluno (cadastrado) na Sala (cadastrada) onde o professor/admin autenticado vai estar */
     @Transactional
-    public Aluno addAlunoSala(Integer id_aluno, Integer id_sala) {
+    public Aluno addAlunoSala(String cgm, Integer id_sala) {
 
         try {
-            Aluno aluno = alunoRepository.findById(id_aluno)
+            Aluno aluno = alunoRepository.findByCgm(cgm)
                     .orElseThrow(AlunoInvalidException.AlunoNotFoundExceptionAll::new);
 
             Sala sala = salaRepository.findById(id_sala)
