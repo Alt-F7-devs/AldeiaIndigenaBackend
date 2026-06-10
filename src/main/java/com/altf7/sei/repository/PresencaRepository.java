@@ -2,6 +2,7 @@ package com.altf7.sei.repository;
 
 import com.altf7.sei.entity.Presenca;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,8 @@ public interface PresencaRepository extends JpaRepository<Presenca, Integer> {
 
     @Query("SELECT COUNT(p) FROM Presenca p WHERE p.aluno.id_aluno = :idAluno")
     long countByAluno(@Param("idAluno") Integer idAluno);
+
+    @Modifying
+    @Query("DELETE FROM Presenca p WHERE p.aluno.id_aluno = :idAluno AND p.sala.id_sala = :idSala")
+    void deleteByAlunoESala(@Param("idAluno") Integer idAluno, @Param("idSala") Integer idSala);
 }

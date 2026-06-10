@@ -34,4 +34,12 @@ public class PresencaController {
     public ResponseEntity<List<PresencaResponseDTO>> calcularFrequenciaTodos() {
         return ResponseEntity.ok(presencaService.calcularFrequenciaTodos());
     }
+
+    @DeleteMapping("/{cgm}/sala/{idSala}")
+    public ResponseEntity<Void> removerPresenca(
+            @PathVariable Integer idSala,
+            @PathVariable String cgm) {
+        presencaService.removerPresenca(cgm, idSala);
+        return ResponseEntity.noContent().build();
+    }
 }

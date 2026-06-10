@@ -11,6 +11,7 @@ import com.altf7.sei.exception.ConflictException;
 import com.altf7.sei.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -104,5 +105,18 @@ public class PresencaService {
                     );
                 })
                 .toList();
+    }
+
+    @Transactional
+    public void removerPresenca(String cgm, Integer idSala) {
+
+        Aluno aluno = alunoRepository.findByCgm(cgm)
+                .orElseThrow(NotFoundException.AlunoNotFoundException::new);
+
+        if (!presencaRepository.existsByAlunoESala(aluno.getId_aluno(), idSala)) {
+            throw new NotFoundException.AlunoNotFoundException();
+        }
+
+        presencaRepository.deleteByAlunoESala(aluno.getId_aluno(), idSala);
     }
 }

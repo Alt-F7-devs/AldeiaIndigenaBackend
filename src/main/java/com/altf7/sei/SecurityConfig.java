@@ -133,6 +133,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST).permitAll()
                         .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST_ID).permitAll()
                         .requestMatchers(HttpMethod.POST, PRESENCA_ALUNO_SALA).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, PRESENCA_ALUNO_SALA).permitAll()
                         .requestMatchers(HttpMethod.GET, PRESENCA_ALUNO_SALA_ID).permitAll()
                         .requestMatchers(HttpMethod.GET, PRESENCA_PROFESSOR_SALA).permitAll()
 
