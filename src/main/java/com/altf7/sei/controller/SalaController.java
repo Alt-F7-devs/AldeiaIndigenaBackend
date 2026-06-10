@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/sala")
+@RequestMapping("/api/v1/sala")
 public class SalaController {
 
     private final SalaService salaService;
@@ -37,9 +37,9 @@ public class SalaController {
     }
 
     /* Endpoint --> Adicionar Aluno a uma Sala já cadastrada */
-    @PostMapping("/{id_sala}/aluno/{id_aluno}")
-    public ResponseEntity<AlunoSalaDTO> addAlunoSala(@PathVariable("id_sala") Integer id_sala, @PathVariable("id_aluno") Integer id_aluno) {
-        Aluno aluno = salaService.addAlunoSala(id_aluno, id_sala);
+    @PostMapping("/{id_sala}/aluno/{cgm}")
+    public ResponseEntity<AlunoSalaDTO> addAlunoSala(@PathVariable("id_sala") Integer id_sala, @PathVariable("cgm") String cgm) {
+        Aluno aluno = salaService.addAlunoSala(cgm, id_sala);
         AlunoSalaDTO dto = new AlunoSalaDTO(
                 aluno.getId_aluno(),
                 aluno.getNome(),
