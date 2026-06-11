@@ -4,6 +4,7 @@ import com.altf7.sei.dto.aluno.AlunoResponseDTO;
 import com.altf7.sei.dto.jogo.JogoResponseDTO;
 import com.altf7.sei.dto.sala.SalaListResponseDTO;
 import com.altf7.sei.dto.sala.SalaRequestDTO;
+import com.altf7.sei.dto.sala.SalaResponseDTO;
 import com.altf7.sei.entity.*;
 import com.altf7.sei.exception.*;
 import com.altf7.sei.repository.*;
@@ -139,11 +140,17 @@ public class SalaService {
     /* Listagem Geral de Salas cadastradas */
     public List<SalaListResponseDTO> listarSala(){
         try {
-           return salaRepository.findAll()
+            return salaRepository.findAll()
                     .stream()
-                    .map(sala -> new SalaListResponseDTO(sala.getId_sala(),sala.getNum_sa(),sala.getData(),sala.getProfessor() != null ? sala.getProfessor().getId_professor() : null,sala.getProfessor() != null ? sala.getProfessor().getNome() : null))
+                    .map(sala -> new SalaListResponseDTO(
+                            sala.getId_sala(),
+                            sala.getNum_sa(),
+                            sala.getData(),
+                            sala.getProfessor() != null ? sala.getProfessor().getId_professor() : null,
+                            sala.getProfessor() != null ? sala.getProfessor().getNome() : null,
+                            sala.getJogo() != null ? sala.getJogo().getNome() : null
+                    ))
                     .toList();
-
         } catch (DataAccessException ex) {
             throw new InternalServerError.SalaListInternalServerError();
         }
@@ -154,7 +161,36 @@ public class SalaService {
         try {
             return salaRepository.findById(id_sala)
                     .stream()
-                    .map(sala -> new SalaListResponseDTO(sala.getId_sala(),sala.getNum_sa(),sala.getData(),sala.getProfessor() != null ? sala.getProfessor().getId_professor() : null,sala.getProfessor() != null ? sala.getProfessor().getNome() : null))
+                    .map(sala -> new SalaListResponseDTO(
+                            sala.getId_sala(),
+                            sala.getNum_sa(),
+                            sala.getData(),
+                            sala.getProfessor() != null ? sala.getProfessor().getId_professor() : null,
+                            sala.getProfessor() != null ? sala.getProfessor().getNome() : null,
+                            sala.getJogo() != null ? sala.getJogo().getNome() : null
+                    ))
+                    .toList();
+        } catch (DataAccessException ex) {
+            throw new InternalServerError.SalaListInternalServerError();
+        }
+    }
+
+    /* Listagem de Salas do Professor logado */
+    public List<SalaListResponseDTO> listarSalaPorProfessor(Integer id_professor){
+        try {
+            return salaRepository.findAll()
+                    .stream()
+                    .filter(sala -> sala.getProfessor() != null &&
+                            sala.getProfessor().getId_professor().equals(id_professor))
+                    .sorted((a, b) -> a.getId_sala().compareTo(b.getId_sala()))
+                    .map(sala -> new SalaListResponseDTO(
+                            sala.getId_sala(),
+                            sala.getNum_sa(),
+                            sala.getData(),
+                            sala.getProfessor().getId_professor(),
+                            sala.getProfessor().getNome(),
+                            sala.getJogo() != null ? sala.getJogo().getNome() : null
+                    ))
                     .toList();
         } catch (DataAccessException ex) {
             throw new InternalServerError.SalaListInternalServerError();
