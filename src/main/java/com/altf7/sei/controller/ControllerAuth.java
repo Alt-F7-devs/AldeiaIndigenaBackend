@@ -39,4 +39,11 @@ public class ControllerAuth {
                 authService.loginAluno(dto.cgm(), dto.senha(), request, response)
         );
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        authService.logout(request);
+        return ResponseEntity.noContent().build();
+    }
+
 }
