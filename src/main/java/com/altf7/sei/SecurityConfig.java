@@ -50,6 +50,9 @@ public class SecurityConfig {
     private static final String PRESENCA_ALUNO_SALA = "/api/v1/presencas/{cgm}/sala/{idSala}";
     private static final String PRESENCA_ALUNO_SALA_ID = "/api/v1/presencas/frequencia/{idAluno}";
     private static final String PRESENCA_PROFESSOR_SALA = "/api/v1/presencas/frequencia";
+    private static final String ROLE_ADMIN = "ADMIN";
+    private static final String ROLE_PROFESSOR = "PROFESSOR";
+    private static final String ROLE_ALUNO = "ALUNO";
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -100,58 +103,59 @@ public class SecurityConfig {
                         ).permitAll()
                         // Admin - apenas ADMIN
                         .requestMatchers(HttpMethod.POST, ADMIN_API).permitAll()
-                        .requestMatchers(HttpMethod.POST, ADMIN_ALUNO_API).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, ADMIN_ALUNO_API).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, ADMIN_ALUNO_API_ID).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, ADMIN_ALUNO_API_ID).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, ADMIN_ALUNO_API_ID).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, ADMIN_PROFESSOR_API).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, ADMIN_PROFESSOR_API).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, ADMIN_PROFESSOR_API_ID).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, ADMIN_PROFESSOR_API_ID).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, ADMIN_PROFESSOR_API_ID).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, ADMIN_ALUNO_API).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, ADMIN_ALUNO_API).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, ADMIN_ALUNO_API_ID).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.PATCH, ADMIN_ALUNO_API_ID).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, ADMIN_ALUNO_API_ID).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.POST, ADMIN_PROFESSOR_API).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, ADMIN_PROFESSOR_API).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, ADMIN_PROFESSOR_API_ID).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.PATCH, ADMIN_PROFESSOR_API_ID).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, ADMIN_PROFESSOR_API_ID).hasRole(ROLE_ADMIN)
 
                         // Jogos - ADMIN gerencia, Professor/Aluno só visualiza
-                        .requestMatchers(HttpMethod.POST, JOGOS_API).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.PUT, JOGOS_API_ID).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.DELETE, JOGOS_API_ID).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, JOGOS_API).hasAnyRole("ADMIN", "PROFESSOR", "ALUNO")
-                        .requestMatchers(HttpMethod.GET, JOGOS_API_ID).hasAnyRole("ADMIN", "PROFESSOR", "ALUNO")
+                        .requestMatchers(HttpMethod.POST, JOGOS_API).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.PUT, JOGOS_API_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.DELETE, JOGOS_API_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, JOGOS_API).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR, ROLE_ALUNO)
+                        .requestMatchers(HttpMethod.GET, JOGOS_API_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR, ROLE_ALUNO)
 
                         // Aluno - ADMIN gerencia
-                        .requestMatchers(HttpMethod.POST, ALUNO_API).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, ALUNO_API).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, ALUNO_API_ID).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.PATCH, ALUNO_API_ID).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, ALUNO_API_ID).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, ALUNO_API).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, ALUNO_API).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, ALUNO_API_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.PATCH, ALUNO_API_ID).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, ALUNO_API_ID).hasRole(ROLE_ADMIN)
 
                         // Professor - ADMIN gerencia
-                        .requestMatchers(HttpMethod.POST, PROFESSOR_API).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, PROFESSOR_API).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, PROFESSOR_API_ID).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.PATCH, PROFESSOR_API_ID).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, PROFESSOR_API_ID).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, PROFESSOR_API).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, PROFESSOR_API).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, PROFESSOR_API_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.PATCH, PROFESSOR_API_ID).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, PROFESSOR_API_ID).hasRole(ROLE_ADMIN)
 
                         // Sala - ADMIN/PROFESSOR gerenciam
-                        .requestMatchers(HttpMethod.POST, SALA_API).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, SALA_API).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, SALA_API_ID).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.PATCH, SALA_API_ID).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.DELETE, SALA_API_ID).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, SALA_API_ALUNO).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, SALA_API_ALUNO_LIST).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, SALA_API_ALUNO_LIST_ID).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.DELETE, SALA_API_PROFESSOR).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.POST, SALA_API_JOGO).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST).hasAnyRole("ADMIN", "PROFESSOR", "ALUNO")
-                        .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST_ID).hasAnyRole("ADMIN", "PROFESSOR", "ALUNO")
-                        .requestMatchers(HttpMethod.GET, SALA_API_PROFESSOR_LIST).hasAnyRole("ADMIN", "PROFESSOR")
+                        .requestMatchers(HttpMethod.POST, SALA_API).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, SALA_API).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, SALA_API_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.PATCH, SALA_API_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.DELETE, SALA_API_ID).hasRole(ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.POST, SALA_API_ALUNO).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, SALA_API_ALUNO_LIST).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, SALA_API_ALUNO_LIST_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.DELETE, SALA_API_PROFESSOR).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.POST, SALA_API_JOGO).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR, ROLE_ALUNO)
+                        .requestMatchers(HttpMethod.GET, SALA_API_JOGO_LIST_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR, ROLE_ALUNO)
+                        .requestMatchers(HttpMethod.GET, SALA_API_PROFESSOR_LIST).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+
 
                         // Presença - ALUNO registra, PROFESSOR/ADMIN visualiza
-                        .requestMatchers(HttpMethod.POST, PRESENCA_ALUNO_SALA).hasAnyRole("ADMIN", "PROFESSOR", "ALUNO")
-                        .requestMatchers(HttpMethod.DELETE, PRESENCA_ALUNO_SALA).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, PRESENCA_ALUNO_SALA_ID).hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, PRESENCA_PROFESSOR_SALA).hasAnyRole("ADMIN", "PROFESSOR")
+                        .requestMatchers(HttpMethod.POST, PRESENCA_ALUNO_SALA).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR, ROLE_ALUNO)
+                        .requestMatchers(HttpMethod.DELETE, PRESENCA_ALUNO_SALA).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, PRESENCA_ALUNO_SALA_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
+                        .requestMatchers(HttpMethod.GET, PRESENCA_PROFESSOR_SALA).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
 
                         .anyRequest().authenticated()
                 )
