@@ -135,7 +135,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, PROFESSOR_API_ID).hasRole(ROLE_ADMIN)
                         .requestMatchers(HttpMethod.DELETE, PROFESSOR_API_ID).hasRole(ROLE_ADMIN)
 
-                        // Sala - ADMIN/PROFESSOR gerenciam
+                        // Sala - ADMIN/PROFESSOR gerencia
                         .requestMatchers(HttpMethod.POST, SALA_API).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
                         .requestMatchers(HttpMethod.GET, SALA_API).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
                         .requestMatchers(HttpMethod.GET, SALA_API_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
