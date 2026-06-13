@@ -134,4 +134,10 @@ public class SalaController {
     public ResponseEntity<JogoResponseDTO> buscarJogoPorIdSala(@PathVariable Integer id) {
         return ResponseEntity.ok(salaService.buscarJogoPorIdSala(id));
     }
+
+    /* Listar salas do professor logado */
+    @GetMapping("/professor")
+    public ResponseEntity<List<SalaListResponseDTO>> listarSalaProfessor(@RequestParam Integer id_professor){
+        return ResponseEntity.ok(salaService.listarSalaPorProfessor(id_professor));
+    }
 }

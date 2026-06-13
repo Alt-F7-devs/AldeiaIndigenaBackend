@@ -7,6 +7,7 @@ public record SalaListResponseDTO(
         String num_sa,
         LocalDate data,
         Integer id_professor,
-        String nome
+        String nome,
+        String jogoNome
 )
 {}
