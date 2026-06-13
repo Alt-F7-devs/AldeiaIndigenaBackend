@@ -7,8 +7,8 @@ services:
       - "8080:8080"
     environment:
       DB_URL: jdbc:postgresql://db:5432/sei_db
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: DEBUG
     depends_on:
       db:
@@ -19,15 +19,15 @@ services:
     container_name: sei_db
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: sei_db
     ports:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d sei_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d sei_db"]
       interval: 5s
       timeout: 5s
       retries: 10
