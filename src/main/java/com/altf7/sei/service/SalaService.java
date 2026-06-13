@@ -223,24 +223,6 @@ public class SalaService {
         }
     }
 
-    /*Listar as salas do professor logado*/
-    public List<SalaListResponseDTO> listarSalaPorProfessor(Integer idProfessor) {
-        try {
-            return salaRepository.findByProfessorId(idProfessor)
-                    .stream()
-                    .map(sala -> new SalaListResponseDTO(
-                            sala.getId_sala(),
-                            sala.getNum_sa(),
-                            sala.getData(),
-                            sala.getProfessor() != null ? sala.getProfessor().getId_professor() : null,
-                            sala.getProfessor() != null ? sala.getProfessor().getNome() : null
-                    ))
-                    .toList();
-        } catch (DataAccessException ex) {
-            throw new InternalServerError.SalaListInternalServerError();
-        }
-    }
-
     /* Recebe metodo --> listar jogo geral da Classe JogoService */
     public List<JogoResponseDTO> listarJogoSala() {
       return jogoService.listar();
