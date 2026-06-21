@@ -2,11 +2,11 @@ package com.altf7.sei.service;
 
 import com.altf7.sei.dto.presenca.PresencaResponseDTO;
 import com.altf7.sei.entity.Aluno;
+import com.altf7.sei.entity.Jogo;
 import com.altf7.sei.entity.Presenca;
-import com.altf7.sei.entity.Sala;
 import com.altf7.sei.repository.AlunoRepository;
+import com.altf7.sei.repository.JogoRepository;
 import com.altf7.sei.repository.PresencaRepository;
-import com.altf7.sei.repository.SalaRepository;
 import com.altf7.sei.exception.ConflictException;
 import com.altf7.sei.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,44 +21,50 @@ public class PresencaService {
 
     private final PresencaRepository presencaRepository;
     private final AlunoRepository alunoRepository;
-    private final SalaRepository salaRepository;
+    private final JogoRepository jogoRepository;
     private final AlunoService alunoService;
 
-    public void registrarPresenca(String cgm, Integer idSala) {
+    /* Registra presença de um aluno em um JOGO específico (não mais na sala inteira) */
+    @Transactional
+    public void registrarPresenca(String cgm, Integer idJogo) {
 
         Aluno aluno = alunoRepository.findByCgm(cgm)
                 .orElseThrow(NotFoundException.AlunoNotFoundException::new);
-        // valida se o aluno pertence àquela sala
-        if (!alunoService.validarAlunoNaSala(aluno.getId_aluno(), idSala)) {
+
+        Jogo jogo = jogoRepository.findById(idJogo)
+                .orElseThrow(NotFoundException.SalaNotFoundException::new);
+
+        // valida se o aluno pertence à sala à qual o jogo está vinculado
+        if (jogo.getSala() == null ||
+                !alunoService.validarAlunoNaSala(aluno.getId_aluno(), jogo.getSala().getId_sala())) {
             throw new NotFoundException.AlunoNotFoundException();
         }
 
-        // valida se presença já foi registrada
-        if (presencaRepository.existsByAlunoESala(aluno.getId_aluno(), idSala)) {
+        // valida se presença já foi registrada para esse jogo
+        if (presencaRepository.existsByAlunoEJogo(aluno.getId_aluno(), idJogo)) {
             throw new ConflictException.PresencaJaRegistradaException();
         }
 
-
-        Sala sala = salaRepository.findById(idSala)
-                .orElseThrow(NotFoundException.SalaNotFoundException::new);
-
         Presenca presenca = new Presenca();
         presenca.setAluno(aluno);
-        presenca.setSala(sala);
+        presenca.setJogo(jogo);
 
         presencaRepository.save(presenca);
     }
 
+    /* Frequência de um aluno: presenças registradas / total de jogos da sala dele */
     public PresencaResponseDTO calcularFrequencia(Integer idAluno) {
 
         Aluno aluno = alunoRepository.findById(idAluno)
                 .orElseThrow(NotFoundException.AlunoNotFoundException::new);
 
-
-        boolean temPresenca = aluno.getSala() != null &&
-                presencaRepository.existsByAlunoESala(idAluno, aluno.getSala().getId_sala());
-
-        double percentual = temPresenca ? 100.0 : 0.0;
+        double percentual = 0.0;
+        if (aluno.getSala() != null) {
+            Integer idSala = aluno.getSala().getId_sala();
+            long totalJogos = jogoRepository.countBySala(idSala);
+            long presencas = presencaRepository.countByAlunoESala(idAluno, idSala);
+            percentual = totalJogos == 0 ? 0.0 : (presencas * 100.0) / totalJogos;
+        }
 
         String status;
         if (percentual >= 80) {
@@ -82,10 +88,12 @@ public class PresencaService {
         return alunoRepository.findAll()
                 .stream()
                 .map(aluno -> {
-                    long totalSalas = alunoRepository.countSalasByAluno(aluno.getId_aluno());
+                    long totalJogos = aluno.getSala() != null
+                            ? jogoRepository.countBySala(aluno.getSala().getId_sala())
+                            : 0;
                     long totalPresencas = presencaRepository.countByAluno(aluno.getId_aluno());
 
-                    double percentual = totalSalas == 0 ? 0.0 : (totalPresencas * 100.0) / totalSalas;
+                    double percentual = totalJogos == 0 ? 0.0 : (totalPresencas * 100.0) / totalJogos;
 
                     String status;
                     if (percentual >= 80) {
@@ -107,16 +115,25 @@ public class PresencaService {
                 .toList();
     }
 
+    /* Lista os IDs dos alunos com presença registrada em um jogo específico */
+    public List<Integer> listarPresencasDoJogo(Integer idJogo) {
+        if (!jogoRepository.existsById(idJogo)) {
+            throw new NotFoundException.SalaNotFoundException();
+        }
+        return presencaRepository.listarIdsAlunosPresentesNoJogo(idJogo);
+    }
+
+    /* Remove presença de um aluno em um JOGO específico */
     @Transactional
-    public void removerPresenca(String cgm, Integer idSala) {
+    public void removerPresenca(String cgm, Integer idJogo) {
 
         Aluno aluno = alunoRepository.findByCgm(cgm)
                 .orElseThrow(NotFoundException.AlunoNotFoundException::new);
 
-        if (!presencaRepository.existsByAlunoESala(aluno.getId_aluno(), idSala)) {
+        if (!presencaRepository.existsByAlunoEJogo(aluno.getId_aluno(), idJogo)) {
             throw new NotFoundException.AlunoNotFoundException();
         }
 
-        presencaRepository.deleteByAlunoESala(aluno.getId_aluno(), idSala);
+        presencaRepository.deleteByAlunoEJogo(aluno.getId_aluno(), idJogo);
     }
 }

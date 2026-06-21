@@ -6,9 +6,6 @@ public record SalaResponseDTO(
         Integer id_sala,
         String num_sa,
         LocalDate data,
-
-        String nome,
-        String jogoNome
+        String nome
 )
-
 {}

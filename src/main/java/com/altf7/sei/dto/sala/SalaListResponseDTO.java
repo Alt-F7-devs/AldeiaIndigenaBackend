@@ -1,6 +1,7 @@
 package com.altf7.sei.dto.sala;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record SalaListResponseDTO(
         Integer id_sala,
@@ -8,6 +9,6 @@ public record SalaListResponseDTO(
         LocalDate data,
         Integer id_professor,
         String nome,
-        String jogoNome
+        List<String> jogosNomes
 )
 {}

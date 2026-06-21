@@ -16,12 +16,17 @@ public class PresencaController {
 
     private final PresencaService presencaService;
 
-    @PostMapping("/{cgm}/sala/{idSala}")
+    @PostMapping("/{cgm}/jogo/{idJogo}")
     public ResponseEntity<Void> registrarPresenca(
             @PathVariable String cgm,
-            @PathVariable Integer idSala) {
-        presencaService.registrarPresenca(cgm, idSala);
+            @PathVariable Integer idJogo) {
+        presencaService.registrarPresenca(cgm, idJogo);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/jogo/{idJogo}")
+    public ResponseEntity<List<Integer>> listarPresencasDoJogo(@PathVariable Integer idJogo) {
+        return ResponseEntity.ok(presencaService.listarPresencasDoJogo(idJogo));
     }
 
     @GetMapping("/frequencia/{idAluno}")
@@ -35,11 +40,11 @@ public class PresencaController {
         return ResponseEntity.ok(presencaService.calcularFrequenciaTodos());
     }
 
-    @DeleteMapping("/{cgm}/sala/{idSala}")
+    @DeleteMapping("/{cgm}/jogo/{idJogo}")
     public ResponseEntity<Void> removerPresenca(
-            @PathVariable Integer idSala,
+            @PathVariable Integer idJogo,
             @PathVariable String cgm) {
-        presencaService.removerPresenca(cgm, idSala);
+        presencaService.removerPresenca(cgm, idJogo);
         return ResponseEntity.noContent().build();
     }
 }

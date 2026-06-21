@@ -30,9 +30,8 @@ public class SalaController {
     public ResponseEntity<SalaResponseDTO> criarSala(@RequestBody SalaRequestDTO req) {
         Sala sala = salaService.criarSala(req);
         String professorNome = sala.getProfessor() != null ? sala.getProfessor().getNome() : null;
-        String jogoNome = sala.getJogo() != null ? sala.getJogo().getNome() : null;
         return ResponseEntity.status(201).body(
-                new SalaResponseDTO(sala.getId_sala(), sala.getNum_sa(), sala.getData(), professorNome, jogoNome)
+                new SalaResponseDTO(sala.getId_sala(), sala.getNum_sa(), sala.getData(), professorNome)
         );
     }
 
@@ -80,9 +79,8 @@ public class SalaController {
     public ResponseEntity<SalaResponseDTO> editarSala(@PathVariable Integer id_sala, @RequestBody SalaRequestDTO req) {
         Sala sala = salaService.editarSala(id_sala, req);
         String professorNome = sala.getProfessor() != null ? sala.getProfessor().getNome() : null;
-        String jogoNome = sala.getJogo() != null ? sala.getJogo().getNome() : null;
         return ResponseEntity.ok(
-                new SalaResponseDTO(sala.getId_sala(), sala.getNum_sa(), sala.getData(), professorNome, jogoNome)
+                new SalaResponseDTO(sala.getId_sala(), sala.getNum_sa(), sala.getData(), professorNome)
         );
     }
 
@@ -91,9 +89,8 @@ public class SalaController {
     public ResponseEntity<SalaResponseDTO> desvincularProfessorSala(@PathVariable Integer id_sala) {
         Sala sala = salaService.desvincularProfessorSala(id_sala);
         String professorNome = sala.getProfessor() != null ? sala.getProfessor().getNome() : null;
-        String jogoNome = sala.getJogo() != null ? sala.getJogo().getNome() : null;
         return ResponseEntity.ok(
-                new SalaResponseDTO(sala.getId_sala(), sala.getNum_sa(), sala.getData(), professorNome, jogoNome)
+                new SalaResponseDTO(sala.getId_sala(), sala.getNum_sa(), sala.getData(), professorNome)
         );
     }
 
@@ -104,15 +101,15 @@ public class SalaController {
         return ResponseEntity.noContent().build();
     }
 
-    /* Endpoint --> Adicionar Jogo a uma Sala já cadastrada */
+    /* Endpoint --> Adicionar Jogo a uma Sala já cadastrada (mantém os jogos já vinculados) */
     @PostMapping("/{id_sala}/jogos/{id_jogo}")
     public ResponseEntity<SalaJogoDTO> addJogoSala(@PathVariable Integer id_sala, @PathVariable Integer id_jogo) {
-        Sala sala = salaService.addJogoSala(id_sala, id_jogo);
+        Sala sala = salaService.addJogoSala(id_jogo, id_sala);
         SalaJogoDTO dto = new SalaJogoDTO(
                 sala.getId_sala(),
                 sala.getNum_sa(),
-                sala.getJogo().getId(),
-                sala.getJogo().getNome()
+                id_jogo,
+                jogoService.buscarPorId(id_jogo).nome()
         );
         return ResponseEntity.status(201).body(dto);
     }

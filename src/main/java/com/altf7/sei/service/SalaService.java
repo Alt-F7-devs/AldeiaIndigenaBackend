@@ -11,14 +11,19 @@ import com.altf7.sei.repository.*;
 import com.altf7.sei.validator.ValidadorCredentialsExceptionSala;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SalaService {
+
+    private static final Logger log = LoggerFactory.getLogger(SalaService.class);
 
     private final SalaRepository salaRepository;
     private final EntityManager entityManager;
@@ -29,6 +34,14 @@ public class SalaService {
     private final ValidadorCredentialsExceptionSala validadorCredentialsExceptionSala;
     private final JogoService jogoService;
     private final AlunoService alunoService;
+
+    /* Extrai os nomes dos jogos vinculados a uma sala (lista, pode ser vazia) */
+    private List<String> nomesDosJogos(Sala sala) {
+        if (sala.getJogos() == null) return List.of();
+        return sala.getJogos().stream()
+                .map(Jogo::getNome)
+                .toList();
+    }
 
     /* Cria Sala */
     @Transactional
@@ -41,12 +54,6 @@ public class SalaService {
             Sala sala = new Sala();
             sala.setNum_sa(req.num_sa());
             sala.setAdmin(admin);
-
-            if (req.jogo_id_jogo() != null) {
-                Jogo jogo = jogoRepository.findById(req.jogo_id_jogo())
-                        .orElseThrow(JogoInvalidException.JogoNotFoundExceptionAll::new);
-                sala.setJogo(jogo);
-            }
 
             if (req.professor_id_professor() != null) {
                 Professor professor = professorRepository.findById(req.professor_id_professor())
@@ -75,12 +82,6 @@ public class SalaService {
                 Admin admin = adminRepository.findById(req.admin_id())
                         .orElseThrow(AdminInvalidException.AdminNotFoundExceptionAll::new);
                 sala.setAdmin(admin);
-            }
-
-            if (req.jogo_id_jogo() != null) {
-                Jogo jogo = jogoRepository.findById(req.jogo_id_jogo())
-                        .orElseThrow(JogoInvalidException.JogoNotFoundExceptionAll::new);
-                sala.setJogo(jogo);
             }
 
             if (req.professor_id_professor() != null) {
@@ -148,7 +149,7 @@ public class SalaService {
                             sala.getData(),
                             sala.getProfessor() != null ? sala.getProfessor().getId_professor() : null,
                             sala.getProfessor() != null ? sala.getProfessor().getNome() : null,
-                            sala.getJogo() != null ? sala.getJogo().getNome() : null
+                            nomesDosJogos(sala)
                     ))
                     .toList();
         } catch (DataAccessException ex) {
@@ -167,7 +168,7 @@ public class SalaService {
                             sala.getData(),
                             sala.getProfessor() != null ? sala.getProfessor().getId_professor() : null,
                             sala.getProfessor() != null ? sala.getProfessor().getNome() : null,
-                            sala.getJogo() != null ? sala.getJogo().getNome() : null
+                            nomesDosJogos(sala)
                     ))
                     .toList();
         } catch (DataAccessException ex) {
@@ -189,10 +190,11 @@ public class SalaService {
                             sala.getData(),
                             sala.getProfessor().getId_professor(),
                             sala.getProfessor().getNome(),
-                            sala.getJogo() != null ? sala.getJogo().getNome() : null
+                            nomesDosJogos(sala)
                     ))
                     .toList();
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
+            log.error("Erro ao listar salas do professor {}", id_professor, ex);
             throw new InternalServerError.SalaListInternalServerError();
         }
     }
@@ -205,7 +207,7 @@ public class SalaService {
         salaRepository.save(sala);
     }
 
-    /* Adiciona jogo (cadastrado) na sala */
+    /* Adiciona jogo (já cadastrado) na sala, SEM remover os jogos já vinculados */
     @Transactional
     public Sala addJogoSala(Integer id_jogo, Integer id_sala) {
         try {
@@ -215,8 +217,10 @@ public class SalaService {
             Sala sala = salaRepository.findById(id_sala)
                     .orElseThrow(SalaInvalidException.SalaNotFoundExceptionAll::new);
 
-            sala.setJogo(jogo);
-            return salaRepository.save(sala);
+            jogo.setSala(sala);
+            jogoRepository.save(jogo);
+
+            return sala;
 
         } catch (DataAccessException ex) {
             throw new InternalServerError.SalaJogoInternalServerError();
@@ -225,7 +229,7 @@ public class SalaService {
 
     /* Recebe metodo --> listar jogo geral da Classe JogoService */
     public List<JogoResponseDTO> listarJogoSala() {
-      return jogoService.listar();
+        return jogoService.listar();
     }
 
     /* Recebe metodo --> listar jogo por ID da Classe JogoService */

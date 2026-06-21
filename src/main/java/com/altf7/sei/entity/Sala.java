@@ -35,11 +35,7 @@ public class Sala {
     @JoinColumn(name = "admin_login")
     private Admin admin;
 
-    @ManyToOne
-    @JoinColumn(name = "jogo_id_jogo")
-    private Jogo jogo;
-
     @OneToMany(mappedBy = "sala")
-    private List<Presenca> presencas;
+    private List<Jogo> jogos = new ArrayList<>();
 
 }
