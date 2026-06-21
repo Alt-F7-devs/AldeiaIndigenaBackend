@@ -136,6 +136,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+    /* Exception --> Acesso negado (professor tentando ver/editar recurso de outro professor) */
+    @ExceptionHandler(AccessDeniedCustomException.class)
+    public ResponseEntity<ErrorResponse> accessDenied(AccessDeniedCustomException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.FORBIDDEN.value());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
     /* Exception --> InternalServerError subclasses */
     @ExceptionHandler({
             InternalServerError.SalaInternalServerError.class,
