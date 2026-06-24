@@ -1,5 +1,6 @@
 package com.altf7.sei.service;
 
+import com.altf7.sei.dto.presenca.PresencaRelatorioFrequenciaDTO;
 import com.altf7.sei.dto.presenca.PresencaResponseDTO;
 import com.altf7.sei.entity.Aluno;
 import com.altf7.sei.entity.Jogo;
@@ -135,5 +136,40 @@ public class PresencaService {
         }
 
         presencaRepository.deleteByAlunoEJogo(aluno.getId_aluno(), idJogo);
+    }
+
+    // MÉTODOS RELATÓRIO FREQUÊNCIA (herdam as funcionalidades do metodo: calcularFrequenciaTodos,
+    // a fim de permitir que os dados para o relatório não interrompam os relacionamentos que já existem
+    private String calcularStatus(double percentual) {
+        if (percentual >= 80) return "REGULAR";
+        if (percentual >= 75) return "ALERTA";
+        return "REPROVADO";
+    }
+
+    public List<PresencaRelatorioFrequenciaDTO> gerarRelatorioFrequencia() {
+        return alunoRepository.findAll()
+                .stream()
+                .map(aluno -> {
+                    Integer idSala = aluno.getSala() != null ? aluno.getSala().getId_sala() : null;
+
+                    long totalJogos = idSala != null ? jogoRepository.countBySala(idSala) : 0;
+                    long presencas  = idSala != null
+                            ? presencaRepository.countByAlunoESala(aluno.getId_aluno(), idSala)
+                            : 0;
+
+                    double percentual = totalJogos == 0 ? 0.0 : (presencas * 100.0) / totalJogos;
+
+                    return new PresencaRelatorioFrequenciaDTO(
+                            aluno.getNome(),
+                            aluno.getCgm(),
+                            idSala,
+                            aluno.getSala() != null ? aluno.getSala().getNum_sa() : "Sem sala",
+                            presencas,
+                            totalJogos,
+                            percentual,
+                            calcularStatus(percentual)
+                    );
+                })
+                .toList();
     }
 }

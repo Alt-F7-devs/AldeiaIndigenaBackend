@@ -39,7 +39,7 @@ public class AdminService {
             throw new RuntimeException("Senha deve conter pelo menos 1 letra");
         } else if(!req.senha().matches(".*[@#$%!].*")) {
             throw new RuntimeException("Senha deve possuir no mínimo 1 caractere especial: !,@,#,$,%");
-        }
+        }   
         try {
             Admin adm = new Admin();
             adm.setLogin(req.login());
