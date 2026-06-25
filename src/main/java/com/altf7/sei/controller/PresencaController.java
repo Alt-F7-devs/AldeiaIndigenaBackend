@@ -1,5 +1,6 @@
 package com.altf7.sei.controller;
 
+import com.altf7.sei.dto.presenca.PresencaDetalheDTO;
 import com.altf7.sei.dto.presenca.PresencaRelatorioFrequenciaDTO;
 import com.altf7.sei.dto.presenca.PresencaResponseDTO;
 import com.altf7.sei.service.PresencaService;
@@ -52,5 +53,10 @@ public class PresencaController {
     @GetMapping("/frequencia/relatorio")
     public ResponseEntity<List<PresencaRelatorioFrequenciaDTO>> gerarRelatorioFrequencia() {
         return ResponseEntity.ok(presencaService.gerarRelatorioFrequencia());
+    }
+
+    @GetMapping("/aluno/{cgm}")
+    public ResponseEntity<List<PresencaDetalheDTO>> listarPresencasDoAluno(@PathVariable String cgm) {
+        return ResponseEntity.ok(presencaService.listarPresencasDoAluno(cgm));
     }
 }

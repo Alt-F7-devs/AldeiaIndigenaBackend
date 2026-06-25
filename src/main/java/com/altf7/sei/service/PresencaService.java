@@ -1,5 +1,6 @@
 package com.altf7.sei.service;
 
+import com.altf7.sei.dto.presenca.PresencaDetalheDTO;
 import com.altf7.sei.dto.presenca.PresencaRelatorioFrequenciaDTO;
 import com.altf7.sei.dto.presenca.PresencaResponseDTO;
 import com.altf7.sei.entity.Aluno;
@@ -144,6 +145,22 @@ public class PresencaService {
         if (percentual >= 80) return "REGULAR";
         if (percentual >= 75) return "ALERTA";
         return "REPROVADO";
+    }
+
+    /* Lista as presenças individuais de um aluno (jogo + data) — usado para conquistas */
+    public List<PresencaDetalheDTO> listarPresencasDoAluno(String cgm) {
+
+        Aluno aluno = alunoRepository.findByCgm(cgm)
+                .orElseThrow(NotFoundException.AlunoNotFoundException::new);
+
+        return presencaRepository.findByAlunoId(aluno.getId_aluno())
+                .stream()
+                .map(presenca -> new PresencaDetalheDTO(
+                        presenca.getJogo().getId(),
+                        presenca.getJogo().getNome(),
+                        presenca.getJogo().getDataCriacao()
+                ))
+                .toList();
     }
 
     public List<PresencaRelatorioFrequenciaDTO> gerarRelatorioFrequencia() {
