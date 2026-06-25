@@ -50,6 +50,7 @@ public class SecurityConfig {
     private static final String PRESENCA_ALUNO_SALA = "/api/v1/presencas/{cgm}/sala/{idSala}";
     private static final String PRESENCA_ALUNO_SALA_ID = "/api/v1/presencas/frequencia/{idAluno}";
     private static final String PRESENCA_PROFESSOR_SALA = "/api/v1/presencas/frequencia";
+    private static final String PRESENCA_ALUNO_ID_SALA = "/api/v1/presencas/frequencia/aluno/{cgm}";
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_PROFESSOR = "PROFESSOR";
     private static final String ROLE_ALUNO = "ALUNO";
@@ -80,9 +81,6 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/webjars/**",
-                                ADMIN_API,
-                                ALUNO_API,
-                                ALUNO_API_ID,
                                 PRESENCA_ALUNO_SALA,
                                 PRESENCA_ALUNO_SALA_ID,
                                 PRESENCA_PROFESSOR_SALA,
@@ -153,6 +151,7 @@ public class SecurityConfig {
 
                         // Presença - ALUNO registra, PROFESSOR/ADMIN visualiza
                         .requestMatchers(HttpMethod.POST, PRESENCA_ALUNO_SALA).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR, ROLE_ALUNO)
+                        .requestMatchers(HttpMethod.GET, PRESENCA_ALUNO_ID_SALA).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR, ROLE_ALUNO)
                         .requestMatchers(HttpMethod.DELETE, PRESENCA_ALUNO_SALA).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
                         .requestMatchers(HttpMethod.GET, PRESENCA_ALUNO_SALA_ID).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)
                         .requestMatchers(HttpMethod.GET, PRESENCA_PROFESSOR_SALA).hasAnyRole(ROLE_ADMIN, ROLE_PROFESSOR)

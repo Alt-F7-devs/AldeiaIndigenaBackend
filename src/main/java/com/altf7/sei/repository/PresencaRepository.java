@@ -36,4 +36,7 @@ public interface PresencaRepository extends JpaRepository<Presenca, Integer> {
     @Modifying
     @Query("DELETE FROM Presenca p WHERE p.aluno.id_aluno = :idAluno AND p.jogo.id = :idJogo")
     void deleteByAlunoEJogo(@Param("idAluno") Integer idAluno, @Param("idJogo") Integer idJogo);
+
+    @Query("SELECT p FROM Presenca p WHERE p.aluno.id_aluno = :idAluno")
+    List<Presenca> findByAlunoId(@Param("idAluno") Integer idAluno);
 }

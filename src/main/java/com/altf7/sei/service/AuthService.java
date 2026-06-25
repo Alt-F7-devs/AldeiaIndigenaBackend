@@ -40,7 +40,7 @@ public class AuthService {
             Admin admin = adminOpt.get();
             if (passwordEncoder.matches(senha, admin.getSenha())) {
                 autenticar("ROLE_ADMIN", cpf, request, response);
-                return new LoginResponseDTO("ADMIN", admin.getId_admin());
+                return new LoginResponseDTO("ADMIN", admin.getId_admin(), admin.getLogin(), cpf);
             }
         }
 
@@ -50,7 +50,7 @@ public class AuthService {
             Professor prof = profOpt.get();
             if (passwordEncoder.matches(senha, prof.getSenha())) {
                 autenticar("ROLE_PROFESSOR", cpf, request, response);
-                return new LoginResponseDTO("PROFESSOR", prof.getId_professor());
+                return new LoginResponseDTO("PROFESSOR", prof.getId_professor(), prof.getNome(), cpf);
             }
         }
 
@@ -68,7 +68,7 @@ public class AuthService {
         }
 
         autenticar("ROLE_ALUNO", cgm, request, response);
-        return new LoginResponseDTO("ALUNO", aluno.getId_aluno());
+        return new LoginResponseDTO("ALUNO", aluno.getId_aluno(), aluno.getNome(), cgm);
     }
 
     private void autenticar(String role, String principal,
